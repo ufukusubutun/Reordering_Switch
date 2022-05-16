@@ -1,7 +1,9 @@
 # Reordering_Switch
-all experiment files are to be trensfered to the emulator node.
+
+# Running Experiment
+All experiment files are to be trensfered to the emulator node.
 (Including flow size traces that (will be) available at this link):
-https://drive.google.com/drive/folders/1PlF5LqZj0Nxc_oOZ_jk_e4iga3oVrxKr?usp=sharing
+https://drive.google.com/drive/folders/13lMalGCIaGQ8IE_72NblcA9p2WbxnvYf?usp=sharing
 
 The emulator node acts as the controller of the entire experiment.
 
@@ -13,13 +15,17 @@ I suggest running automated_exp_v2 thru screen and with (>> script_log.txt 2>&1)
 
 At the end the results are zipped together at /mydrive of emulator
 
-After the exp is done, transfer all the files back to a local computer and use the script inside post_precessing for doing the "post processing".
 
+# Post-Processing
+After the exp is done, transfer all the files back to a local computer and use the script inside post_precessing for doing the "post processing". 
+Results for one example experiment is found below (still uploading). You can use just the pickle to speed things up.
+https://drive.google.com/drive/folders/156-LIkzNkzj4xJ4mGw0_7vBk7mW816Ov?usp=sharing
+
+# Trace-Generation
 Also use what is inside trace_gen to generate the flows. That requires the package from this repo:
 https://github.com/piotrjurkiewicz/flow-models
 
-
-
+# Experiment Profile and Rspecs
 Latest versions of rspecs are porivded both for geni and Cloudlab
 (though the cloudlab version is out of date as the other cloudlab format is currently being used at the profile. The profile is available below:)
 https://www.cloudlab.us/show-profile.php?uuid=a96d8311-cd81-11ec-ba12-e4434b2381fc
