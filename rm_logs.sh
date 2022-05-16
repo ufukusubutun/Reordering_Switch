@@ -1,0 +1,13 @@
+ssh uu2001@node-0 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-1 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-2 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-3 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-4 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-5 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-6 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-7 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-8 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-9 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-10 -i ~/.ssh/ufuk -f 'rm *.json'
+ssh uu2001@node-11 -i ~/.ssh/ufuk -f 'rm *.json'
+
