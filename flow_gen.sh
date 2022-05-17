@@ -55,10 +55,10 @@ while [ $SECONDS -lt $end ] && read line ; do
             len=128000
             num=$(expr $payload / $len)
             #  --cport $port_num
-            iperf3 -c $destination -p $port_num -O 10 -J -n $num -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+            iperf3 -c $destination -p $port_num -J -n $num -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
         else
             #  --cport $port_num
-            iperf3 -c $destination -p $port_num -O 10 -J --cport $port_num -n 1 -l $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+            iperf3 -c $destination -p $port_num -J -n 1 -l $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
         fi
         
         flow_ind=$(expr $flow_ind + 1)

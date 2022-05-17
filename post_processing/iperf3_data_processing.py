@@ -30,6 +30,9 @@ mean = lambda l: sum(l) / len(l)
 # 5_6_trial_of_random_wait_fix - random sender port num not implemented yet
 file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_6_trial_of_random_wait_fix"
 
+# 5_17
+file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_aftercap_highcap"
+
 
 
 
@@ -218,12 +221,12 @@ print(stats_tp)
 # %% for duration
 
 
-N=16
+N=1
 
 data=[]
 
-cap_vals=[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
-rtt_vals=[4] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
+cap_vals=[100, 500,1000, 3000, 8000] # ,  3000 [500, 1000]
+rtt_vals=[12] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
 lam_vals=[5, 9] #5
 
 
@@ -258,12 +261,12 @@ for lam_ind in range(len(lam_vals)):
             lns += plt.errorbar( np.array(cap_vals)/1e3, dur_vals, yerr=rel_errors, capsize=2 , color=colors[i-1], marker=markers[i-1], markersize=6, linestyle=linsyls[i-1], fillstyle='none')       
             # *1e6*0.1*lam_vals[lam_ind]
         
-    plt.semilogx()
-#    plt.loglog()
+#    plt.semilogx()
+    plt.loglog()
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-    plt.ylim( (0,5) )
+    plt.ylim( (3e-2,2) )
 
 
     if lam_ind == 10:#0:
@@ -304,11 +307,11 @@ plt.close(fig)
 # %% for goodput
 
 
-N=16
+N=1
 
 data=[]
 
-cap_vals=[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
+cap_vals=[100, 500,1000, 3000, 8000]  #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
 rtt_vals=[4] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
 lam_vals=[5, 9] #5
 
@@ -387,11 +390,11 @@ plt.close(fig)
 # %% for ReTX
 
 
-N=16
+N=1
 
 data=[]
 
-cap_vals=[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
+cap_vals=[100, 500,1000, 3000, 8000] #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
 rtt_vals=[4] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
 lam_vals=[5, 9] #5
 
@@ -432,7 +435,7 @@ for lam_ind in range(len(lam_vals)):
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-    plt.ylim( (2e-5,1e-3) )
+    #plt.ylim( (2e-5,1e-3) )
 
 
     if lam_ind == 10:#0:
@@ -605,44 +608,67 @@ df.head()
 #df['end'][0]['sum_received']['bits_per_second']
 
 
+# %%
+
+tput=exp_results[exp_results['destination']=='sink'].send_bytes
+g = sns.ecdfplot(tput);
+#g.hold()
+g.set(xscale="log");
+#print('mean:', np.mean(tput)*1e-6, ' Mbps')
+plt.show()
+
+# %%
+
+tput=exp_results[exp_results['destination']=='sink'].recv_bytes
+g = sns.ecdfplot(tput);
+#g.hold()
+#g.set(xscale="log");
+#print('mean:', np.mean(tput)*1e-6, ' Mbps')
+plt.show()
+
+
+
 # In[135]:
 
 
-tput=df[df['destination']=='sink'].recv_tput
+tput=exp_results[exp_results['destination']=='sink'].recv_tput
 g = sns.ecdfplot(tput);
 #g.hold()
 g.set(xscale="log");
 print('mean:', np.mean(tput)*1e-6, ' Mbps')
+plt.show()
 
 
 # In[138]:
 
 
-duration=df[df['destination']=='sink'].recv_duration
+duration=exp_results[exp_results['destination']=='sink'].recv_duration
 g = sns.ecdfplot(duration);
 #g.hold()
 g.set(xscale="log");
 print('mean:', np.mean(duration), ' sec')
+plt.show()
 
 
 # In[136]:
 
 
-mean_rtt=df[df['destination']=='sink'].mean_rtt*1e-3
+mean_rtt=exp_results[exp_results['destination']=='sink'].mean_rtt*1e-3
 g = sns.ecdfplot(mean_rtt);
 g.set(xscale="log");
 print('mean rtt:', np.mean(mean_rtt), ' ms')
+plt.show()
 
 
 # In[137]:
 
 
-retx=df[df['destination']=='sink'].retx
+retx=exp_results[exp_results['destination']=='sink'].retx
 g = sns.ecdfplot(retx);
 #g.hold()
 g.set(xscale="log");
 print('retx:', np.mean(retx))
-
+plt.show()
 
 # In[ ]:
 
