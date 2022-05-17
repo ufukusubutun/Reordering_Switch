@@ -32,7 +32,7 @@ mkdir -p ~/n$node_id-f$flow_gen_id
 rm -f ~/n$node_id-f$flow_gen_id/*
 
 
-rand_delay_m=$(expr $(expr 8000 / $cap ) \* 100) # 1 MB/cap(mbps) in ms x 10 (8000/cap) x 100
+rand_delay_m=$(expr $(expr 8000 \* 1000 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) x 1000
 
 #echo rand_delay_m= $rand_delay_m
 
@@ -46,25 +46,29 @@ while [ $SECONDS -lt $end ] && read line ; do
 
     payload=$line
 
-    if [ $payload -ge 128000 ]
+    if [ $payload -le 30000000 ] # ignore flow sizes larger than 30 MB as it won't terminate during the experiment
     then
-        # save each flow into a separate json file
-        len=128000
-        num=$(expr $payload / $len)
-        #  --cport $port_num
-        iperf3 -c $destination -p $port_num -O 10 -J -n $num -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-    else
-        #  --cport $port_num
-        iperf3 -c $destination -p $port_num -O 10 -J --cport $port_num -n 1 -l $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-    fi
-    
-    flow_ind=$(expr $flow_ind + 1)
 
-    # wait until random wait has elapsed
-    while [ $(expr $(expr $(date +%s%N) - $flw_start_time) / 1000000) -lt $random_wait ]; do
-        sleep .0001 # sleep 0.1 ms
-    done
-    
+        if [ $payload -ge 128000 ]
+        then
+            # save each flow into a separate json file
+            len=128000
+            num=$(expr $payload / $len)
+            #  --cport $port_num
+            iperf3 -c $destination -p $port_num -O 10 -J -n $num -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        else
+            #  --cport $port_num
+            iperf3 -c $destination -p $port_num -O 10 -J --cport $port_num -n 1 -l $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        fi
+        
+        flow_ind=$(expr $flow_ind + 1)
+
+        # wait until random wait has elapsed
+        while [ $(expr $(expr $(date +%s%N) - $flw_start_time) / 1000000) -lt $random_wait ]; do
+            sleep .0001 # sleep 0.1 ms
+        done
+    fi
+
 done < ~/data_gen/trace_n$node_id-f$flow_gen_id.txt
 
 

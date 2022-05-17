@@ -27,8 +27,8 @@ int2node_gen ()
 switch_cap[1]=100 #100 # rate should not be smaller than N - (rate/N) intiger division gives 0
 switch_cap[2]=500
 switch_cap[3]=1000 #1000
-switch_cap[4]=2000
-switch_cap[5]=4800
+switch_cap[4]=3000
+switch_cap[5]=8000
 
 algo[1]='sudo sysctl -w net.ipv4.tcp_recovery=1 net.ipv4.tcp_max_reordering=300' # 1 rack
 algo[2]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=300' # 2 dupthresh
@@ -93,14 +93,14 @@ do
 
     #RTT=10 # Base RTT in milliseconds
     
-	for RTT in 4 8 #1 5 10 # 15 25 50 # 3 25
+	for RTT in 4 8 12 #1 5 10 # 15 25 50 # 3 25
 	do
 		RTT_par_us=$(expr $(expr $RTT \* 1000) / 4 )  # Base RTT to be applied per step in microseconds, will be added at 4 separate places
 		echo RTT $RTT ms, RTT_par_us $RTT_par_us us 
 		for lam in 9 5 #3 # 5 9 #1 5 9
 		do
 			echo "lam 0.$lam"
-			for N in 1 4 16 #1 2 4 8 16 #32 # 64 # switch size
+			for N in 1 16 #1 2 4 8 16 #32 # 64 # switch size
 			do
 				for cap_ind in 5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
