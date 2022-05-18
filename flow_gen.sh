@@ -32,7 +32,7 @@ mkdir -p ~/n$node_id-f$flow_gen_id
 rm -f ~/n$node_id-f$flow_gen_id/*
 
 
-rand_delay_m=$(expr $(expr 8000 \* 1000 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) x 1000
+rand_delay_m=$(expr $(expr 8000 \* 10 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) 
 
 #echo rand_delay_m= $rand_delay_m
 
@@ -49,18 +49,20 @@ while [ $SECONDS -lt $end ] && read line ; do
     if [ $payload -le 30000000 ] # ignore flow sizes larger than 30 MB as it won't terminate during the experiment
     then
 
-        if [ $payload -ge 128000 ]
+        if [ $payload -ge 1001 ]
         then
             # save each flow into a separate json file
-            len=128000
-            num=$(expr $payload / $len)
+            len=$(expr $payload / 1000) #128000
+            #num=$(expr $payload / $len)
             #  --cport $port_num
-            iperf3 -c $destination -p $port_num -J -n $num -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+            iperf3 -c $destination -p $port_num -J -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
         else
             #  --cport $port_num
-            iperf3 -c $destination -p $port_num -J -n 1 -l $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+            iperf3 -c $destination -p $port_num -J -n $payload -l 1 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
         fi
         
+        #iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+
         flow_ind=$(expr $flow_ind + 1)
 
         # wait until random wait has elapsed

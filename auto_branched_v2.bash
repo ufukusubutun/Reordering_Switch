@@ -93,16 +93,16 @@ do
 
     #RTT=10 # Base RTT in milliseconds
     
-	for RTT in 4 8 12 #1 5 10 # 15 25 50 # 3 25
+	for RTT in 8 # 4 12 #1 5 10 # 15 25 50 # 3 25
 	do
 		RTT_par_us=$(expr $(expr $RTT \* 1000) / 4 )  # Base RTT to be applied per step in microseconds, will be added at 4 separate places
 		echo RTT $RTT ms, RTT_par_us $RTT_par_us us 
-		for lam in 9 5 #3 # 5 9 #1 5 9
+		for lam in 9 #5 #3 # 5 9 #1 5 9
 		do
 			echo "lam 0.$lam"
 			for N in 1 16 #1 2 4 8 16 #32 # 64 # switch size
 			do
-				for cap_ind in 5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
+				for cap_ind in 5 3 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
 					echo '************************'
 					echo algortihm = $alg_ind '(1 rack, 2 dupthresh, 3 dupack)'

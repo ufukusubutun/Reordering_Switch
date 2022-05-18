@@ -1,4 +1,4 @@
-n#!/usr/bin/env python
+#!/usr/bin/env python
 # coding: utf-8
 
 # In[87]:
@@ -28,10 +28,13 @@ mean = lambda l: sum(l) / len(l)
 #file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_5_utah_hopefully_fine"
 
 # 5_6_trial_of_random_wait_fix - random sender port num not implemented yet
-file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_6_trial_of_random_wait_fix"
+#file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_6_trial_of_random_wait_fix"
 
 # 5_17
-file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_aftercap_highcap"
+#file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_aftercap_highcap"
+
+# 5_17_omit fix
+file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_afteromit"
 
 
 
