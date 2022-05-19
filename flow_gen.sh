@@ -32,7 +32,7 @@ mkdir -p ~/n$node_id-f$flow_gen_id
 rm -f ~/n$node_id-f$flow_gen_id/*
 
 
-rand_delay_m=$(expr $(expr 8000 \* 10 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) 
+rand_delay_m=$(expr $(expr 8000 \* 10 ) / $cap ) # 1 MB/cap(mbps) in ms x 100 (8000/cap) 
 
 #echo rand_delay_m= $rand_delay_m
 

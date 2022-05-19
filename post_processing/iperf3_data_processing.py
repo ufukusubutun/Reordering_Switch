@@ -36,6 +36,9 @@ mean = lambda l: sum(l) / len(l)
 # 5_17_omit fix
 file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_afteromit"
 
+# 5_18_after_iperfcrisis
+file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_18_after_iperfcrisis"
+
 
 
 
@@ -153,7 +156,7 @@ print(exp_results.head())
 
 print(exp_results.columns)
 useful = []
-useful = exp_results[ exp_results['destination'] == 'sink' ]
+useful = exp_results[ (exp_results['destination'] == 'sink') & (exp_results['recv_bytes'] > 0.7*exp_results['send_bytes']) ]
 useful.drop('destination', inplace=True, axis=1)
 useful['gput'] = useful['recv_bytes']/useful['recv_duration']
 useful['retx_norm'] = useful['retx']/(  (useful['recv_bytes'] > 1500)*useful['recv_bytes']/1500 + 1*((useful['recv_bytes'] <= 1500)) )
@@ -286,7 +289,7 @@ for lam_ind in range(len(lam_vals)):
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-    plt.ylim( (6.9e-3,8.1e-3) )
+    #plt.ylim( (4e-2,9e-1) )
 
 
     if lam_ind == 10:#0:
@@ -327,7 +330,7 @@ plt.close(fig)
 # %% for goodput
 
 
-N=1
+N=16
 
 data=[]
 
@@ -372,7 +375,7 @@ for lam_ind in range(len(lam_vals)):
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-    plt.ylim( (5e7,4e8) )
+    #plt.ylim( (2e4,1.2e5) )
 
 
     if lam_ind == 10:#0:
@@ -410,7 +413,7 @@ plt.close(fig)
 # %% for ReTX
 
 
-N=1
+N=16
 
 data=[]
 
@@ -455,7 +458,7 @@ for lam_ind in range(len(lam_vals)):
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-    #plt.ylim( (2e-5,1e-3) )
+    #plt.ylim( (3e-11,1e-4) )
 
 
     if lam_ind == 10:#0:
@@ -627,7 +630,7 @@ df.head()
 
 #df['end'][0]['sum_received']['bits_per_second']
 
-
+print(useful.columns)
 # %%
 
 tput=exp_results[exp_results['destination']=='sink'].send_bytes
@@ -639,10 +642,11 @@ plt.show()
 
 # %%
 
-tput=exp_results[exp_results['destination']=='sink'].recv_bytes
+#tput=exp_results[exp_results['destination']=='sink'].recv_bytes
+tput=useful.recv_bytes
 g = sns.ecdfplot(tput);
 #g.hold()
-#g.set(xscale="log");
+g.set(xscale="log");
 #print('mean:', np.mean(tput)*1e-6, ' Mbps')
 plt.show()
 
@@ -650,9 +654,12 @@ plt.show()
 
 # In[135]:
 
-
-tput=exp_results[exp_results['destination']=='sink'].recv_tput
-g = sns.ecdfplot(tput);
+#tput=exp_results[exp_results['destination']=='sink'].recv_tput
+tput=useful[ useful['sw_cap']==8000] # recv_tput
+g = sns.displot(tput, 
+            x="recv_tput", 
+            hue=tput[['alg', 'N']].apply(tuple, axis=1),
+            kind="ecdf")
 #g.hold()
 g.set(xscale="log");
 print('mean:', np.mean(tput)*1e-6, ' Mbps')
@@ -662,8 +669,13 @@ plt.show()
 # In[138]:
 
 
-duration=exp_results[exp_results['destination']=='sink'].recv_duration
-g = sns.ecdfplot(duration);
+#duration=exp_results[exp_results['destination']=='sink'].recv_duration
+duration=useful[ (useful['N']==16) & (useful['sw_cap']==8000) & (useful['payload'] > 100000)] #.recv_duration # (useful['N']==16) & (useful['alg']==2) & 
+#g = sns.ecdfplot(x='recv_duration', data=duration, hue=duration[['N', 'alg']].apply(tuple, axis=1));
+g = sns.displot(duration, 
+            x="recv_duration", 
+            hue='alg', # duration[['alg', 'N']].apply(tuple, axis=1),
+            kind="ecdf")
 #g.hold()
 g.set(xscale="log");
 print('mean:', np.mean(duration), ' sec')
@@ -681,14 +693,18 @@ plt.show()
 
 
 # In[137]:
-
-
-retx=exp_results[exp_results['destination']=='sink'].retx
-g = sns.ecdfplot(retx);
+sns.set_palette("pastel")
+retx=useful[ (useful['N']==16) & (useful['sw_cap']==100) & (useful['payload'] > 100000)]  # useful[ useful['sw_cap'] == 8000 ] # recv_tput
+g = sns.displot(retx, 
+            x="retx_norm", 
+            hue='alg', # retx[['alg', 'N']].apply(tuple, axis=1),
+            kind="ecdf")
 #g.hold()
 g.set(xscale="log");
-print('retx:', np.mean(retx))
+print('mean:', np.mean(tput)*1e-6, ' Mbps')
 plt.show()
+
+
 
 # In[ ]:
 

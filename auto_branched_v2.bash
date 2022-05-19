@@ -30,9 +30,10 @@ switch_cap[3]=1000 #1000
 switch_cap[4]=3000
 switch_cap[5]=8000
 
-algo[1]='sudo sysctl -w net.ipv4.tcp_recovery=1 net.ipv4.tcp_max_reordering=300' # 1 rack
-algo[2]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=300' # 2 dupthresh
-algo[3]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3'   # 3 dupack
+algo[1]='sudo sysctl -w net.ipv4.tcp_recovery=1 net.ipv4.tcp_max_reordering=300 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1' # 1 rack
+algo[2]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=300 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1' # 2 dupthresh
+algo[3]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1'   # 3 dupack
+algo[4]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3 net.ipv4.tcp_sack=0 net.ipv4.tcp_dsack=0'   # 4 1980 + cubic
 
 
 #uname="uu2001"
@@ -79,9 +80,9 @@ trap cleanup SIGINT SIGTERM
 
 run_q_capture=1 # set to 1 to capture parallel queue logs as csv at the emulator node
 
-for alg_ind in 1 2 3 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack
+for alg_ind in 1 2 3 4 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 do
-	echo Setting algortihm to = $alg_ind  1 rack, 2 dupthresh, 3 dupack
+	echo Setting algortihm to = $alg_ind  1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 
 	for host in "${sources[@]}"
 	do
@@ -100,9 +101,9 @@ do
 		for lam in 9 #5 #3 # 5 9 #1 5 9
 		do
 			echo "lam 0.$lam"
-			for N in 1 16 #1 2 4 8 16 #32 # 64 # switch size
+			for N in 16 #1 2 4 8 16 #32 # 64 # switch size
 			do
-				for cap_ind in 5 3 1  #4 # switch capacity 100 500 1000 4000 10000
+				for cap_ind in 5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
 					echo '************************'
 					echo algortihm = $alg_ind '(1 rack, 2 dupthresh, 3 dupack)'
