@@ -20,7 +20,7 @@ for host in "${sources[@]}"
 
 while [ 1 ]; do 
 	echo exp_sink:
-	tc -s -d qdisc show dev $(ip route get 10.14.1.2 | grep -oP "(?<= dev )[^ ]+") | grep -A2 -E \'$grep_str\' | grep backlog | awk -F" " '{print $2}' | sed 's/b//g' | paste -s -d, - | tee -a $filename
+	tc -s -d qdisc show dev $(ip route get 10.14.1.2 | grep -oP "(?<= dev )[^ ]+") | grep -A2 -E "$grep_str" | grep backlog | awk -F" " '{print $2}' | sed 's/b//g' | paste -s -d, - | tee -a $filename
 	#tc -s -d qdisc show dev $(ip route get 10.14.1.2 | grep -oP "(?<= dev )[^ ]+") | grep backlog | tee -a $filename\.txt 
 	#echo o_sink:
 	#tc -s -d qdisc show dev $(ip route get 10.14.2.2 | grep -oP "(?<= dev )[^ ]+") | grep backlog | ts '%.s' | tee -a $filename\.txt

@@ -365,7 +365,7 @@ do
 
 						sleep $exp_time_safe
 						kill_senders
-						sleep 10
+						sleep 2
 
 						mkdir -p $location/iperf_logs
 						mkdir -p $location/iperf_logs/workspace
@@ -373,20 +373,31 @@ do
 						node_id=0 # should be a number from 0 to n
 						for host in "${sources[@]}"
 						do
+							echo "zipping at $host and transferring"
 							#ssh ${uname}@${host} -i $keyfile "cat n${node_id}-f* | jq '[.[] | { from: \"$node_id\", to: .start.connecting_to.host, size_bytes: .start.test_start.bytes , mean_rtt: .end.streams[0].sender.mean_rtt , min_rtt: .end.streams[0].sender.min_rtt , max_rtt: .end.streams[0].sender.max_rtt , rtx: .end.streams[0].sender.retransmits, recv_bytes: .end.streams[0].receiver.bytes , recv_tp_bitsps: .end.streams[0].receiver.bits_per_second , duration: .end.streams[0].receiver.seconds}]' > ${exp_save_name}_$host.json"
 							ssh ${uname}@${host} -i $keyfile "rm -f n${node_id}.zip"
-							ssh ${uname}@${host} -i $keyfile "zip -jr $location/n${node_id}.zip $location/n$node_id-f*"
+							ssh ${uname}@${host} -i $keyfile "zip -jrq $location/n${node_id}.zip $location/n$node_id-f*"
 							scp  -i $keyfile ${uname}@${host}:/users/${uname}/n${node_id}.zip $location/iperf_logs/
 							ssh ${uname}@${host} -i $keyfile "rm -rf $location/n$node_id-f*"
 							node_id=$(expr $node_id + 1)
 						done
 
 						# combine all into a single file per experiment
-						for z in $location/iperf_logs/n*; do unzip "$z" -d $location/iperf_logs/workspace; done
+						echo "combining zips"
+						for z in $location/iperf_logs/n*;
+						do
+							sudo mkdir -p /mydata/iperf_logs/workspace/$(echo $z | sed 's/.zip//g')
+							sudo unzip -q "$z" -d /mydata/iperf_logs/workspace/$(echo $z | sed 's/.zip//g');
+							#mkdir -p $location/iperf_logs/workspace/$(echo $z | sed 's/.zip//g')
+							#unzip -q "$z" -d $location/iperf_logs/workspace/$(echo $z | sed 's/.zip//g');
+						done
 						sudo mkdir -p /mydata/iperf_logs_comb
-						sudo zip -jr /mydata/iperf_logs_comb/comb_${exp_save_name}.zip $location/iperf_logs/workspace
+						sudo zip -jrq /mydata/iperf_logs_comb/comb_${exp_save_name}.zip /mydata/iperf_logs/workspace
+						#sudo zip -jrq /mydata/iperf_logs_comb/comb_${exp_save_name}.zip $location/iperf_logs/workspace
 						#rm -rf $location/iperf_logs/workspace
-						rm -rf $location/iperf_logs
+						sudo rm -rf /mydata/iperf_logs
+						#rm -rf $location/iperf_logs
+						echo "experiment done"
 
 						#$(expr $(expr $lam \* $n_flow) / 10) 
 						# sudo tshark  -q -i $(ip route get 10.14.2.2 | grep -oP "(?<= dev )[^ ]+") -s 400 -Y "(tcp.dstport > 5000) && (tcp.dstport < 6000)" -T fields -e tcp.srcport -e tcp.dstport -e tcp.seq -E header=y -E separator=, -E occurrence=a | ts '%.s'

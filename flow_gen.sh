@@ -46,12 +46,16 @@ while [ $SECONDS -lt $end ] && read line ; do
 
     payload=$line
 
-    if [ $payload -le 30000000 ] # ignore flow sizes larger than 30 MB as it won't terminate during the experiment
+    # increase cap to 1 GB
+    if [ $payload -le 1000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
     then
 
-        if [ $payload -ge 1001 ]
+        if [ $payload -ge 128000001 ]
         then
-            # save each flow into a separate json file
+            #  --cport $port_num
+            iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        elif [ $payload -ge 1001 ]
+        then
             len=$(expr $payload / 1000) #128000
             #num=$(expr $payload / $len)
             #  --cport $port_num
@@ -72,7 +76,6 @@ while [ $SECONDS -lt $end ] && read line ; do
     fi
 
 done < ~/data_gen/trace_n$node_id-f$flow_gen_id.txt
-
 
 #rm ~/n$node_id-f$flow_gen_id/*
 

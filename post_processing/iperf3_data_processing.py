@@ -164,6 +164,23 @@ stats_dur = stats['recv_duration'].agg(['mean', 'count', 'std'])
 stats_gp = stats['gput'].agg(['mean', 'count', 'std'])
 stats_retx = stats['retx_norm'].agg(['mean', 'count', 'std'])
 
+
+  # %%
+
+print(exp_results.columns)
+useful = []
+useful = exp_results[ exp_results['destination'] == 'sink' ]
+useful.drop('destination', inplace=True, axis=1)
+useful['gput'] = useful['send_tput'] #/useful['send_duration']
+useful['retx_norm'] = useful['retx'] #/(  (useful['send_bytes'] > 1500)*useful['send_bytes']/1500 + 1*((useful['send_bytes'] <= 1500)) )
+print(useful.head())
+stats = useful.groupby(['alg', 'RTT', 'N', 'sw_cap', 'lam'])
+
+stats_dur = stats['send_duration'].agg(['mean', 'count', 'std'])
+stats_gp = stats['gput'].agg(['mean', 'count', 'std'])
+stats_retx = stats['retx_norm'].agg(['mean', 'count', 'std'])
+
+
 # %%
 
 # %%
@@ -224,13 +241,13 @@ print(stats_tp)
 # %% for duration
 
 
-N=1
+N=16
 
 data=[]
 
-cap_vals=[100, 500,1000, 3000, 8000] # ,  3000 [500, 1000]
-rtt_vals=[12] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
-lam_vals=[5, 9] #5
+cap_vals=[100,1000, 8000] # ,  3000 [500, 1000]
+rtt_vals=[8] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
+lam_vals=[ 9] #5
 
 
 plt.ioff()
@@ -269,7 +286,7 @@ for lam_ind in range(len(lam_vals)):
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-    plt.ylim( (3e-2,2) )
+    plt.ylim( (6.9e-3,8.1e-3) )
 
 
     if lam_ind == 10:#0:
@@ -296,7 +313,7 @@ plt.gcf().text(0.5, 0.01,' Switch Line Rate (Gbps)', fontsize=10, transform=fig.
 plt.gcf().subplots_adjust(bottom=0.15)
 plt.gcf().subplots_adjust(top=0.9) 
 #fig.set_size_inches(5,2.4, forward=True)
-fig.set_size_inches(5,6, forward=True)
+fig.set_size_inches(8,6, forward=True)
 plt.savefig('dur.pdf', dpi=600)
 plt.close(fig)
 
@@ -314,9 +331,9 @@ N=1
 
 data=[]
 
-cap_vals=[100, 500,1000, 3000, 8000]  #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
-rtt_vals=[4] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
-lam_vals=[5, 9] #5
+cap_vals=[100,1000, 8000]  #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
+rtt_vals=[8] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
+lam_vals=[9] #5
 
 
 plt.ioff()
@@ -355,7 +372,7 @@ for lam_ind in range(len(lam_vals)):
     
 ##    plt.tight_layout()
     plt.title('λ = 0.'+str(lam_vals[lam_ind]))
-#    plt.ylim( (0,1) )
+    plt.ylim( (5e7,4e8) )
 
 
     if lam_ind == 10:#0:
@@ -397,9 +414,9 @@ N=1
 
 data=[]
 
-cap_vals=[100, 500,1000, 3000, 8000] #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
-rtt_vals=[4] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
-lam_vals=[5, 9] #5
+cap_vals=[100,1000, 8000] #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
+rtt_vals=[8] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
+lam_vals=[ 9] #5
 
 plt.ioff()
 fig=plt.figure()
