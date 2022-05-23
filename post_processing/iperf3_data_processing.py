@@ -34,10 +34,13 @@ mean = lambda l: sum(l) / len(l)
 #file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_aftercap_highcap"
 
 # 5_17_omit fix
-file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_afteromit"
+#file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_17_afteromit"
 
 # 5_18_after_iperfcrisis
-file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_18_after_iperfcrisis"
+#file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_18_after_iperfcrisis"
+
+# 5_19_nosack_morepoints
+file_loc = "/Users/ufukusubutun/Library/Mobile Documents/com~apple~CloudDocs/işler/6-21_around_rack/10-21_analytical_analysis/Conf-paper/resubmission_4_22/experiment_runs/5_19_nosack_morepoints"
 
 
 
@@ -156,7 +159,7 @@ print(exp_results.head())
 
 print(exp_results.columns)
 useful = []
-useful = exp_results[ (exp_results['destination'] == 'sink') & (exp_results['recv_bytes'] > 0.7*exp_results['send_bytes']) ]
+useful = exp_results[ (exp_results['destination'] == 'sink') & (exp_results['recv_bytes'] > 0.9*exp_results['send_bytes']) ]
 useful.drop('destination', inplace=True, axis=1)
 useful['gput'] = useful['recv_bytes']/useful['recv_duration']
 useful['retx_norm'] = useful['retx']/(  (useful['recv_bytes'] > 1500)*useful['recv_bytes']/1500 + 1*((useful['recv_bytes'] <= 1500)) )
@@ -168,7 +171,7 @@ stats_gp = stats['gput'].agg(['mean', 'count', 'std'])
 stats_retx = stats['retx_norm'].agg(['mean', 'count', 'std'])
 
 
-  # %%
+  # %% do not use this, this considers send stats
 
 print(exp_results.columns)
 useful = []
@@ -188,7 +191,7 @@ stats_retx = stats['retx_norm'].agg(['mean', 'count', 'std'])
 
 # %%
 
-alg_labels = ["RACK", "dupthresh", "dupACK"]
+alg_labels = ["RACK", "dupthresh", "fixedthresh", "1980"]
 
 # %%
 
@@ -248,7 +251,7 @@ N=16
 
 data=[]
 
-cap_vals=[100,1000, 8000] # ,  3000 [500, 1000]
+cap_vals=[100,500,1000, 3000, 8000] # ,  3000 [500, 1000]
 rtt_vals=[8] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
 lam_vals=[ 9] #5
 
@@ -266,16 +269,16 @@ for lam_ind in range(len(lam_vals)):
     plt.subplot(len(lam_vals) , 1,  lam_ind+1) #3*lam_ind
     plt.grid(True, which="both")
     for rtt_ind in range(len(rtt_vals)):
-        for i in [1,2,3]: #,3]: # ,2]: #,2,3]:#,3]: # range(1,4):
+        for i in [1,2,3,4]: #,3]: # ,2]: #,2,3]:#,3]: # range(1,4):
             dur_vals = np.array(stats_dur.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['mean'])
             #retx_vals = np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['mean'])
             
             lolims= np.array(stats_dur.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['ci95_lo'])
             uplims= np.array(stats_dur.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['ci95_hi'])           
             
-            colors=['tab:blue','tab:red',"tab:green"]
-            linsyls=["solid","dotted","solid"]
-            markers=['s','o','x']
+            colors=['tab:blue','tab:red',"tab:green","tab:green"]
+            linsyls=["solid","dotted","solid","dotted"]
+            markers=['s','o','x','o']
             
             errors = np.array([uplims, lolims]) 
             rel_errors = errors * np.array([1,-1]).reshape(2,-1) + np.matlib.repmat(dur_vals, 2,1) * np.array([-1,1]).reshape(2,-1)
@@ -334,7 +337,7 @@ N=16
 
 data=[]
 
-cap_vals=[100,1000, 8000]  #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
+cap_vals=[100,500,1000, 3000, 8000] #[100,1000, 8000]  #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
 rtt_vals=[8] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
 lam_vals=[9] #5
 
@@ -352,16 +355,16 @@ for lam_ind in range(len(lam_vals)):
     plt.subplot(len(lam_vals) , 1,  lam_ind+1) #3*lam_ind
     plt.grid(True, which="both")
     for rtt_ind in range(len(rtt_vals)):
-        for i in [1,2,3]: #,3]: # ,2]: #,2,3]:#,3]: # range(1,4):
+        for i in [1,2,3,4]: #,3]: # ,2]: #,2,3]:#,3]: # range(1,4):
             gp_vals = np.array(stats_gp.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['mean'])
             #retx_vals = np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['mean'])
             
             lolims= np.array(stats_gp.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['ci95_lo'])
             uplims= np.array(stats_gp.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['ci95_hi'])           
             
-            colors=['tab:blue','tab:red',"tab:green"]
-            linsyls=["solid","dotted","solid"]
-            markers=['s','o','x']
+            colors=['tab:blue','tab:red',"tab:green","tab:green"]
+            linsyls=["solid","dotted","solid","dotted"]
+            markers=['s','o','x','o']
             
             errors = np.array([uplims, lolims]) 
             rel_errors = errors * np.array([1,-1]).reshape(2,-1) + np.matlib.repmat(gp_vals, 2,1) * np.array([-1,1]).reshape(2,-1)
@@ -417,7 +420,7 @@ N=16
 
 data=[]
 
-cap_vals=[100,1000, 8000] #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
+cap_vals=[100,500,1000, 3000, 8000] #[100,1000, 8000] #[100, 500,1000, 2000, 3000] # ,  3000 [500, 1000]
 rtt_vals=[8] #,8] #4 #,3,5] #,10]#,100]  #  [5,25,50]
 lam_vals=[ 9] #5
 
@@ -434,16 +437,16 @@ for lam_ind in range(len(lam_vals)):
     plt.subplot(len(lam_vals) , 1,  lam_ind+1) #3*lam_ind
     plt.grid(True, which="both")
     for rtt_ind in range(len(rtt_vals)):
-        for i in [1,2,3]: #,3]: # ,2]: #,2,3]:#,3]: # range(1,4):
+        for i in [1,2,3,4]: #,3]: # ,2]: #,2,3]:#,3]: # range(1,4):
             retx_vals = np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['mean']) / np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['count'])
             #retx_vals = np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['mean'])
             
             lolims= np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['ci95_lo'])
             uplims= np.array(stats_retx.loc[i].loc[rtt_vals[rtt_ind]].loc[N].xs(lam_vals[lam_ind], level='lam')['ci95_hi'])           
             
-            colors=['tab:blue','tab:red',"tab:green"]
-            linsyls=["solid","dotted","solid"]
-            markers=['s','o','x']
+            colors=['tab:blue','tab:red',"tab:green","tab:green"]
+            linsyls=["solid","dotted","solid","dotted"]
+            markers=['s','o','x','o']
             
             errors = np.array([uplims, lolims]) 
             rel_errors = errors * np.array([1,-1]).reshape(2,-1) + np.matlib.repmat(retx_vals, 2,1) * np.array([-1,1]).reshape(2,-1)
@@ -658,7 +661,7 @@ plt.show()
 tput=useful[ useful['sw_cap']==8000] # recv_tput
 g = sns.displot(tput, 
             x="recv_tput", 
-            hue=tput[['alg', 'N']].apply(tuple, axis=1),
+            hue='alg', #tput[['alg', 'N']].apply(tuple, axis=1),
             kind="ecdf")
 #g.hold()
 g.set(xscale="log");
@@ -670,7 +673,7 @@ plt.show()
 
 
 #duration=exp_results[exp_results['destination']=='sink'].recv_duration
-duration=useful[ (useful['N']==16) & (useful['sw_cap']==8000) & (useful['payload'] > 100000)] #.recv_duration # (useful['N']==16) & (useful['alg']==2) & 
+duration=useful[ (useful['N']==16) & (useful['sw_cap']==100) & (useful['payload'] > 100000)] #.recv_duration # (useful['N']==16) & (useful['alg']==2) & 
 #g = sns.ecdfplot(x='recv_duration', data=duration, hue=duration[['N', 'alg']].apply(tuple, axis=1));
 g = sns.displot(duration, 
             x="recv_duration", 
@@ -694,7 +697,7 @@ plt.show()
 
 # In[137]:
 sns.set_palette("pastel")
-retx=useful[ (useful['N']==16) & (useful['sw_cap']==100) & (useful['payload'] > 100000)]  # useful[ useful['sw_cap'] == 8000 ] # recv_tput
+retx=useful[ (useful['N']==16) & (useful['sw_cap']==8000) & (useful['payload'] > 100000)]  # useful[ useful['sw_cap'] == 8000 ] # recv_tput
 g = sns.displot(retx, 
             x="retx_norm", 
             hue='alg', # retx[['alg', 'N']].apply(tuple, axis=1),
@@ -708,6 +711,34 @@ plt.show()
 
 # In[ ]:
 
+sns.set_palette("pastel")
+retx=useful[ (useful['N']==16) & (useful['sw_cap']==1000) & (useful['payload'] > 100000)]  # useful[ useful['sw_cap'] == 8000 ] # recv_tput
+g = sns.displot(retx, 
+            x="mean_rtt", 
+            hue='alg', # retx[['alg', 'N']].apply(tuple, axis=1),
+            kind="ecdf")
+#g.hold()
+g.set(xscale="log");
+#print('mean:', np.mean(tput)*1e-6, ' Mbps')
+plt.show()
 
+
+# %%
+
+
+#duration=exp_results[exp_results['destination']=='sink'].recv_duration
+data=useful[ (useful['N']==16) & (useful['sw_cap']==1000)] # & (useful['payload'] > 100000)] #.recv_duration # (useful['N']==16) & (useful['alg']==2) & 
+#g = sns.ecdfplot(x='recv_duration', data=duration, hue=duration[['N', 'alg']].apply(tuple, axis=1));
+g = sns.scatterplot(data=data, 
+            x="recv_duration",
+            y="recv_bytes",
+            hue='alg' # duration[['alg', 'N']].apply(tuple, axis=1),
+            )
+#g.hold()
+g.set(yscale="log");
+g.set(xscale="log");
+
+#print('mean:', np.mean(duration), ' sec')
+plt.show()
 
 
