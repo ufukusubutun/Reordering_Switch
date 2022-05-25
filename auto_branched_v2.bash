@@ -80,7 +80,7 @@ trap cleanup SIGINT SIGTERM
 
 run_q_capture=1 # set to 1 to capture parallel queue logs as csv at the emulator node
 
-for alg_ind in 1 2 3 4 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
+for alg_ind in 1 # 2 3 4 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 do
 	echo Setting algortihm to = $alg_ind  1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 
@@ -101,9 +101,9 @@ do
 		for lam in 9 #5 #3 # 5 9 #1 5 9
 		do
 			echo "lam 0.$lam"
-			for N in 16 #1 2 4 8 16 #32 # 64 # switch size
+			for N in 8 #1 2 4 8 16 #32 # 64 # switch size
 			do
-				for cap_ind in 5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
+				for cap_ind in 5 #5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
 					echo '************************'
 					echo algortihm = $alg_ind '(1 rack, 2 dupthresh, 3 dupack)'
@@ -363,6 +363,33 @@ do
 							ssh ${uname}@${host} -i $keyfile -f bash $location/node_init.sh $node_id $N_FLOWS_P_NODE $exp_time $lam ${switch_cap[$cap_ind]} &
 							node_id=$(expr $node_id + 1)
 						done
+
+						sudo mkdir -p /mydata/tshark_logs
+						# tshark stuff						
+						if [[ $trial -eq 1 ]] && [[ $alg_ind -eq 6 ]]; # change alg ind to enable
+						then
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2exp_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap1.csv & #2> /dev/null &#
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2o_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap2.csv & #2> /dev/null &#
+							#(ip.dst==10.14.1.2)&&(ip.proto==6)&&((ip.src==10.10.1.1)||(ip.src==10.10.2.1)||(ip.src==10.10.3.1)||(ip.src==10.10.4.1) )
+#							sleep 0.1
+							int2node_gen 1 # any node 1 to 4 would work
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2node) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_incap1.csv & #2> /dev/null &#
+							int2node_gen 5 # any node 5 to 8 would work
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2node) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_incap2.csv &
+							int2node_gen 9 # any node 9 to 12 would work
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2node) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_incap3.csv &
+
+							#"(ip.dst==10.10.1.1)&&(ip.proto==6)" -T fields -e frame.time -e tcp.stream -e tcp.ack -e tcp.options.sack_le -e tcp.options.sack_re -E header=y -E separator=, -E aggregator=\; -E occurrence=a > capture_acks.txt &#2> /dev/null
+#
+#							sleep 2
+#							#sudo ssh uu20010@server -i ufuk -f sudo timeout $exp_time_safe tcpdump -S -s 100 -i ens2f0 -w exp$trial-rack$mode-mean$reord_mean-reord$reord_rate-server.pcap
+#							#sudo ssh uu20010@emulator -i ufuk -f sudo timeout $exp_time_safe tcpdump -S -s 100 -i ens2f0 -w exp$trial-rack$mode-mean$reord_mean-reord$reord_rate--emulator.pcap
+#							echo 'starting server capture'
+#							ssh uu20010@server -i $keyfile -f "sudo tshark -a duration:$exp_time_safe -i enp6s0f0 -s 400 -Y \"(ip.dst==10.10.3.2)&&(ip.proto==6)\" -T fields -e frame.time -e tcp.stream -e tcp.seq_raw -E header=y -E separator=, -E occurrence=f > deneme_out.txt"
+#							echo 'starting emulator capture'
+#							ssh uu20010@emulatorg -i $keyfile -f "sudo tshark -a duration:$exp_time_safe -i $int2exp_sink -s 400 -Y \"(ip.dst==10.10.3.2)&&(ip.proto==6)\" -T fields -e frame.time -e tcp.stream -e tcp.seq_raw -E header=y -E separator=, -E occurrence=f > deneme_in.txt"
+#
+						fi
 
 						sleep $exp_time_safe
 						kill_senders

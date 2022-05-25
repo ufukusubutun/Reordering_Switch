@@ -110,7 +110,7 @@ if $update
 then
 	sudo apt -y update 
 	sudo apt-get -y update
-	sudo apt-get -y install iperf3 moreutils jq
+	sudo apt-get -y install iperf3 moreutils jq tshark
 fi
 # handle node facing interfaces
 for n in 1 5 9
