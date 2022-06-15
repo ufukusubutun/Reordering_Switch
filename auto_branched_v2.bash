@@ -80,7 +80,7 @@ trap cleanup SIGINT SIGTERM
 
 run_q_capture=1 # set to 1 to capture parallel queue logs as csv at the emulator node
 
-for alg_ind in 1 # 2 3 4 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
+for alg_ind in 4 # 2 3 4 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 do
 	echo Setting algortihm to = $alg_ind  1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 
@@ -103,7 +103,7 @@ do
 			echo "lam 0.$lam"
 			for N in 8 #1 2 4 8 16 #32 # 64 # switch size
 			do
-				for cap_ind in 5 #5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
+				for cap_ind in 1 #5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
 					echo '************************'
 					echo algortihm = $alg_ind '(1 rack, 2 dupthresh, 3 dupack)'
@@ -366,7 +366,7 @@ do
 
 						sudo mkdir -p /mydata/tshark_logs
 						# tshark stuff						
-						if [[ $trial -eq 1 ]] && [[ $alg_ind -eq 6 ]]; # change alg ind to enable
+						if [[ $trial -eq 1 ]] && [[ $alg_ind -eq 4 ]]; # change alg ind to enable
 						then
 							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2exp_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap1.csv & #2> /dev/null &#
 							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2o_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap2.csv & #2> /dev/null &#
