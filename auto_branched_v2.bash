@@ -41,6 +41,8 @@ uname="uu20010"
 location="/users/$uname"
 keyfile="$location/.ssh/ufuk"
 
+# changing below parameters MAY NOT (and probably will not) change all parameter automatically, (it will change some)
+# before doing so please review loops and calculations in the rest of the code
 declare -a sources=("node-0" "node-1" "node-2" "node-3" "node-4" "node-5" "node-6" "node-7" "node-8" "node-9" "node-10" "node-11")
 N_NODES=12
 N_FLOWS_P_NODE=200
@@ -78,7 +80,9 @@ cleanup ()
 trap cleanup SIGINT SIGTERM
 
 
-run_q_capture=1 # set to 1 to capture parallel queue logs as csv at the emulator node
+run_q_capture=0 # set to 1 to capture parallel queue logs as csv at the emulator node
+
+round_robin=0 # use round robin packet placement if 1, use port number based placement if 0
 
 for alg_ind in 4 # 2 3 4 #1 2 3 # 1 rack, 2 dupthresh, 3 dupack, 4 1980 + cubic
 do
@@ -101,7 +105,7 @@ do
 		for lam in 9 #5 #3 # 5 9 #1 5 9
 		do
 			echo "lam 0.$lam"
-			for N in 8 #1 2 4 8 16 #32 # 64 # switch size
+			for N in 16 #1 2 4 8 16 #32 # 64 # switch size
 			do
 				for cap_ind in 1 #5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
@@ -131,25 +135,62 @@ do
 					que_cap=$(expr ${switch_cap[$cap_ind]} / $N )
 					echo "que_cap: $que_cap"
 					
-					for ind in $(seq 11 1 $(expr $N + 10) )
-					do
-						echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
-						sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
-						echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_par_us ) / 1000 )"
-						sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_par_us ) / 1000 ) # 2*BDP of that link in in bytes
-						echo "sudo iptables -A PREROUTING -m statistic --mode nth --every $N --packet $(expr $ind - 11) -t mangle --destination 10.14.0.0/16 -j MARK --set-mark $ind"
-						sudo iptables -A PREROUTING -m statistic --mode nth --every $N --packet $(expr $ind - 11) -t mangle --destination 10.14.0.0/16 -j MARK --set-mark $ind  
-						echo "sudo tc filter add dev $(eval echo $int2exp_sink) protocol ip parent 1: prio 0 handle $ind fw classid 1:$ind"
-						sudo tc filter add dev $(eval echo $int2exp_sink) protocol ip parent 1: prio 0 handle $ind fw classid 1:$ind
+
+					if [[ $round_robin -eq 1 ]] # && [[ $alg_ind -eq 6 ]]
+					then
+						for ind in $(seq 11 1 $(expr $N + 10) )
+						do
+							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
+							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
+							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_par_us ) / 1000 )"
+							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_par_us ) / 1000 ) # 2*BDP of that link in in bytes
+							echo "sudo iptables -A PREROUTING -m statistic --mode nth --every $N --packet $(expr $ind - 11) -t mangle --destination 10.14.0.0/16 -j MARK --set-mark $ind"
+							sudo iptables -A PREROUTING -m statistic --mode nth --every $N --packet $(expr $ind - 11) -t mangle --destination 10.14.0.0/16 -j MARK --set-mark $ind  
+							echo "sudo tc filter add dev $(eval echo $int2exp_sink) protocol ip parent 1: prio 0 handle $ind fw classid 1:$ind"
+							sudo tc filter add dev $(eval echo $int2exp_sink) protocol ip parent 1: prio 0 handle $ind fw classid 1:$ind
+						done
+						
+					else # if quasi-hashed Q placement with no reordering
+
+						#echo $(expr $N_NODES \* $N_FLOWS_P_NODE)
+						port_step=$(expr $(expr $(expr $N_NODES \* $N_FLOWS_P_NODE) / $N) / 3)
+						echo "port_step=$port_step MAKE SURE THIS VALUE IS NOT 0 because of roudning down"
+
+						for ind in $(seq 11 1 $(expr $N + 10) )
+						do
+							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
+							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
+							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_par_us ) / 1000 )"
+							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_par_us ) / 1000 ) # 2*BDP of that link in in bytes
+
+							ranges="$(expr 60000 + $(expr $(expr $ind - 11) \* $port_step) ):$(expr 59999 + $(expr $(expr $ind - 10) \* $port_step) )"
+					        ranges="${ranges},$(expr 60800 + $(expr $(expr $ind - 11) \* $port_step) ):$(expr 60799 + $(expr $(expr $ind - 10) \* $port_step) )"
+					        ranges="${ranges},$(expr 61600 + $(expr $(expr $ind - 11) \* $port_step) ):$(expr 61599 + $(expr $(expr $ind - 10) \* $port_step) )"
+
+					        echo "sudo iptables -A PREROUTING -p tcp --match multiport --dports $ranges -t mangle --destination 10.14.0.0/16 -j MARK --set-mark $ind"
+							sudo iptables -A PREROUTING -p tcp --match multiport --dports $ranges -t mangle --destination 10.14.0.0/16 -j MARK --set-mark $ind  				
+
+							echo "sudo tc filter add dev $(eval echo $int2exp_sink) protocol ip parent 1: prio 0 handle $ind fw classid 1:$ind"
+							sudo tc filter add dev $(eval echo $int2exp_sink) protocol ip parent 1: prio 0 handle $ind fw classid 1:$ind
+						done
+				
+
+					fi
+
+					echo "Press any key to move to next experiment"
+					while [ true ] ; do
+						read -t 3 -n 1
+						if [ $? = 0 ] ; then
+							break ;
+						fi
 					done
-					
+
 					echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) htb rate 10mbit ceil 10mbit"
 					sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) htb rate 10mbit ceil 10mbit
 					echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: tbf rate 20mbit buffer 1600 limit 3000"
 					sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: tbf rate 10mbit buffer 16000 limit 3000
 
 					## second sink
-					## should have Cap????
 					network_capacity=${switch_cap[$cap_ind]}
 
 					echo "sudo tc qdisc del dev $(eval echo $int2o_sink) root"
@@ -366,7 +407,7 @@ do
 
 						sudo mkdir -p /mydata/tshark_logs
 						# tshark stuff						
-						if [[ $trial -eq 1 ]] && [[ $alg_ind -eq 4 ]]; # change alg ind to enable
+						if [[ $trial -eq 1 ]] && [[ $alg_ind -eq 8 ]]; # change alg ind to enable
 						then
 							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2exp_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap1.csv & #2> /dev/null &#
 							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2o_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap2.csv & #2> /dev/null &#
@@ -390,6 +431,34 @@ do
 #							ssh uu20010@emulatorg -i $keyfile -f "sudo tshark -a duration:$exp_time_safe -i $int2exp_sink -s 400 -Y \"(ip.dst==10.10.3.2)&&(ip.proto==6)\" -T fields -e frame.time -e tcp.stream -e tcp.seq_raw -E header=y -E separator=, -E occurrence=f > deneme_in.txt"
 #
 						fi
+
+						if [[ $trial -eq 1 ]] && [[ $alg_ind -eq 10 ]]; # change alg ind to enable
+						then
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2exp_sink) -s 64 -B 4 -Y "(ip.dst==10.14.1.2)&&(ip.proto==6)&&((ip.src==10.10.1.1)||(ip.src==10.10.2.1)||(ip.src==10.10.3.1)||(ip.src==10.10.4.1) )" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap1.csv & #2> /dev/null &#
+							#####sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2o_sink) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_outcap2.csv & #2> /dev/null &#
+							#(ip.dst==10.14.1.2)&&(ip.proto==6)&&((ip.src==10.10.1.1)||(ip.src==10.10.2.1)||(ip.src==10.10.3.1)||(ip.src==10.10.4.1) )
+#							sleep 0.1 ############################################################################ ALSO CHECK IF PORT NUMBER FILTERS CAN BE USEFUL OR NOT
+							int2node_gen 1 # any node 1 to 4 would work
+							sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2node) -s 64 -B 4 -Y "(ip.dst==10.14.1.2)&&(ip.proto==6)&&((ip.src==10.10.1.1)||(ip.src==10.10.2.1)||(ip.src==10.10.3.1)||(ip.src==10.10.4.1) )" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_incap1.csv & #2> /dev/null &#
+							####int2node_gen 5 # any node 5 to 8 would work
+							####sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2node) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_incap2.csv &
+							####int2node_gen 9 # any node 9 to 12 would work
+							####sudo tshark -a duration:$exp_time_safe -q -i $(eval echo $int2node) -s 64 -Y "(ip.proto==6)" -T fields -e frame.time_epoch -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport -e tcp.seq -e tcp.seq_raw -e tcp.ack -e tcp.ack_raw -e tcp.len -e tcp.flags -E header=y -E separator=, -E occurrence=a > /mydata/tshark_logs/${exp_save_name}_incap3.csv &
+
+							#"(ip.dst==10.10.1.1)&&(ip.proto==6)" -T fields -e frame.time -e tcp.stream -e tcp.ack -e tcp.options.sack_le -e tcp.options.sack_re -E header=y -E separator=, -E aggregator=\; -E occurrence=a > capture_acks.txt &#2> /dev/null
+#
+#							sleep 2
+#							#sudo ssh uu20010@server -i ufuk -f sudo timeout $exp_time_safe tcpdump -S -s 100 -i ens2f0 -w exp$trial-rack$mode-mean$reord_mean-reord$reord_rate-server.pcap
+#							#sudo ssh uu20010@emulator -i ufuk -f sudo timeout $exp_time_safe tcpdump -S -s 100 -i ens2f0 -w exp$trial-rack$mode-mean$reord_mean-reord$reord_rate--emulator.pcap
+#							echo 'starting server capture'
+#							ssh uu20010@server -i $keyfile -f "sudo tshark -a duration:$exp_time_safe -i enp6s0f0 -s 400 -Y \"(ip.dst==10.10.3.2)&&(ip.proto==6)\" -T fields -e frame.time -e tcp.stream -e tcp.seq_raw -E header=y -E separator=, -E occurrence=f > deneme_out.txt"
+#							echo 'starting emulator capture'
+#							ssh uu20010@emulatorg -i $keyfile -f "sudo tshark -a duration:$exp_time_safe -i $int2exp_sink -s 400 -Y \"(ip.dst==10.10.3.2)&&(ip.proto==6)\" -T fields -e frame.time -e tcp.stream -e tcp.seq_raw -E header=y -E separator=, -E occurrence=f > deneme_in.txt"
+#
+						fi
+
+
+
 
 						sleep $exp_time_safe
 						kill_senders
