@@ -46,8 +46,8 @@ while [ $SECONDS -lt $end ] && read line ; do
 
     payload=$line
 
-    # increase cap to 10 GB
-    if [ $payload -le 10000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
+    # increase cap to 100 GB
+    if [ $payload -le 100000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
     then
 
         if [ $payload -ge 128000001 ]

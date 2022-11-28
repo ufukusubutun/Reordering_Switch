@@ -6,7 +6,7 @@ flow-models-generate -x size -s $num ${loc}size > flows_w_bytes_raw.txt
 cat flows_w_bytes_raw.txt | awk '{print $20}' | tr -d , > /Users/ufukusubutun/Documents/data_gen/flows_w_bytes.txt
 
 N_NODES=12
-N_FLOWS_P_NODE=200
+N_FLOWS_P_NODE=800 #200
 
 num_serv=$(expr $N_NODES \* $N_FLOWS_P_NODE)
 

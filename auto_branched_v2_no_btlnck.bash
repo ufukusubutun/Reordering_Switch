@@ -84,7 +84,7 @@ cleanup ()
 trap cleanup SIGINT SIGTERM
 
 
-run_q_capture=0 # set to 1 to capture parallel queue logs as csv at the emulator node
+run_q_capture=0 # set to 1 to capture parallel queue logs as csv at the emulator node # not implemented yet
 
 fair_q=1
 round_robin=0 # use round robin packet placement if 1, use port number based placement if 0

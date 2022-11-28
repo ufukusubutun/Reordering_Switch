@@ -28,7 +28,8 @@ echo "Setting up $n_flow iperf3 flow generators at node $node_id. From port:$bas
 for i in $(seq 0 1 $i_flow)
 do
    destination=$TO_EXP_SINK
-   if [[ $i -ge $(expr $(expr $lam \* $n_flow) / 10) ]]; then
+   #if [[ $i -ge $(expr $(expr $lam \* $n_flow) / 10) ]]; then
+   if [[ $(expr $i % 10) -ge $lam ]]; then
        destination=$TO_SINK_2
    fi
 

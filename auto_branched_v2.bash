@@ -49,7 +49,7 @@ keyfile="$location/.ssh/ufuk"
 declare -a sources=("node-0" "node-1" "node-2" "node-3" "node-4" "node-5" "node-6" "node-7" "node-8" "node-9" "node-10" "node-11")
 # new array with source IPs, in the same order - management IPs 
 N_NODES=12
-N_FLOWS_P_NODE=200
+N_FLOWS_P_NODE=800 #200
 declare -a step1=("agg0" "agg1" "agg2" "agg3" "agg4" "agg5")
 declare -a step2=("tor0" "tor1" "tor2")
 #declare -a bottleneck=("core0")
@@ -141,8 +141,27 @@ do
 					que_cap=$(expr ${switch_cap[$cap_ind]} / $N ) 
 					echo "que_cap: $que_cap"
 					
+					if [[ $fair_q -eq 1 ]] # && [[ $alg_ind -eq 6 ]]
+					then
+						#echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:1 htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit"
+						#sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:1 htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit
 
-					if [[ $round_robin -eq 1 ]] # && [[ $alg_ind -eq 6 ]]
+						echo "----reset root to add fq---"
+						echo "sudo tc qdisc del dev $(eval echo $int2exp_sink) root"
+						sudo tc qdisc del dev $(eval echo $int2exp_sink) root
+						echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit"
+						sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit
+
+						#echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) fq nopacing maxrate ${switch_cap[$cap_ind]}mbit"
+						#sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) fq nopacing maxrate ${switch_cap[$cap_ind]}mbit
+
+						#echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit"
+						#sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit
+						#echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) classid $(expr $N + 11)0: fq nopacing maxrate ${switch_cap[$cap_ind]}mbit"
+						#sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) classid $(expr $N + 11)0: fq nopacing maxrate ${switch_cap[$cap_ind]}mbit
+						
+
+					elif [[ $round_robin -eq 1 ]] # && [[ $alg_ind -eq 6 ]]
 					then
 						for ind in $(seq 11 1 $(expr $N + 10) )
 						do
