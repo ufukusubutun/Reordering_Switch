@@ -31,8 +31,12 @@ fi
 mkdir -p ~/n$node_id-f$flow_gen_id
 rm -f ~/n$node_id-f$flow_gen_id/*
 
+rm -f ~/n${node_id}_flowgen.log
+touch ~/n${node_id}_flowgen.log
 
-rand_delay_m=$(expr $(expr 8000 \* 10 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) 
+
+#rand_delay_m=$(expr $(expr 8000 \* 10 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) 
+rand_delay_m=$(expr $(expr 20000 \* 10 ) / $cap ) # 2.5 MB/cap(mbps) in ms x 10 (8000/cap) 
 
 #echo rand_delay_m= $rand_delay_m
 
@@ -41,13 +45,13 @@ end=$(( SECONDS + $duration))
 flow_ind=0
 while [ $SECONDS -lt $end ] && read line ; do
     # calculate the random wait and record timestamp
-    random_wait=$(shuf -i ${rand_delay_m}-$(expr $rand_delay_m \* 10) -n 1) # random wait in ms
+    random_wait=$(shuf -i ${rand_delay_m}-$(expr $rand_delay_m \* 10) -n 1) # random wait in ms 
     flw_start_time=$(date +%s%N)
 
     payload=$line
 
-    # increase cap to 100 GB
-    if [ $payload -le 100000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
+    # increase cap to 1 GB
+    if [ $payload -le 1000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
     then
 
         if [ $payload -ge 128000001 ]
@@ -73,9 +77,20 @@ while [ $SECONDS -lt $end ] && read line ; do
         while [ $(expr $(expr $(date +%s%N) - $flw_start_time) / 1000000) -lt $random_wait ]; do
             sleep .0001 # sleep 0.1 ms
         done
+        #                                                                                         when it started    random wait                    real wait
+        echo ${node_id}, ${flow_gen_id}, ${duration}, ${to_other_sink}, ${port_num}, ${payload}, ${flw_start_time}, ${random_wait}, $(expr $(expr $(date +%s%N) - $flw_start_time) / 1000000)  >> ~/n${node_id}_flowgen.log
+
     fi
 
 done < ~/data_gen/trace_n$node_id-f$flow_gen_id.txt
+
+if [[ $flow_gen_id -eq 1 ]]; then
+    echo "node $node_id flow_gen_id $flow_gen_id flow_ind $flow_ind just terminated"  
+fi
+
+
+
+#echo "node_id $node_id flow_gen_id $flow_gen_id flow_ind $flow_ind"
 
 #rm ~/n$node_id-f$flow_gen_id/*
 

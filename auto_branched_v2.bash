@@ -9,8 +9,8 @@ filename="exp_$(date +"%Y_%m_%d_%H_%M").txt"
 touch $filename
 echo 'alg_ind, RTT, lam, N, cap, trial, avg_meas_rtt, avg_min_rtt, avg_cwnd, socket_snd, avg_reo_wnd, avg_reo_wnd_steps, avg_reo_wnd_persists' >> $filename
 
-exp_time=40 #150 #100 #0
-exp_time_safe=45 #160 # 110 #25 # 125 
+exp_time=70 #110 #150 #100 #0
+exp_time_safe=80 #150 #160 # 110 #25 # 125 
 
 sudo echo sudooo
 
@@ -27,16 +27,16 @@ int2node_gen ()
 switch_cap[1]=100 # rate should not be smaller than N - (rate/N) intiger division gives 1
 switch_cap[2]=500
 switch_cap[3]=1000 #1000
-switch_cap[4]=2500
-switch_cap[5]=4800
+switch_cap[4]=2000
+switch_cap[5]=4500
 switch_cap[6]=7000
 switch_cap[7]=11000
 
 
-algo[1]='sudo sysctl -w net.ipv4.tcp_recovery=1 net.ipv4.tcp_max_reordering=300 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1' # 1 rack
-algo[2]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=300 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1' # 2 dupthresh
-algo[3]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1'   # 3 dupack
-algo[4]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3 net.ipv4.tcp_sack=0 net.ipv4.tcp_dsack=0'   # 4 1980 + cubic
+algo[1]='sudo sysctl -w net.ipv4.tcp_recovery=1 net.ipv4.tcp_max_reordering=300 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1, net.ipv4.tcp_no_metrics_save=1' # 1 rack
+algo[2]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=300 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1, net.ipv4.tcp_no_metrics_save=1' # 2 dupthresh
+algo[3]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3 net.ipv4.tcp_sack=1 net.ipv4.tcp_dsack=1, net.ipv4.tcp_no_metrics_save=1'   # 3 dupack
+algo[4]='sudo sysctl -w net.ipv4.tcp_recovery=0 net.ipv4.tcp_max_reordering=3 net.ipv4.tcp_sack=0 net.ipv4.tcp_dsack=0, net.ipv4.tcp_no_metrics_save=1'   # 4 1980 + cubic
 
 
 #uname="uu2001"
@@ -49,7 +49,7 @@ keyfile="$location/.ssh/ufuk"
 declare -a sources=("node-0" "node-1" "node-2" "node-3" "node-4" "node-5" "node-6" "node-7" "node-8" "node-9" "node-10" "node-11")
 # new array with source IPs, in the same order - management IPs 
 N_NODES=12
-N_FLOWS_P_NODE=800 #200
+N_FLOWS_P_NODE=80 #0 #200
 declare -a step1=("agg0" "agg1" "agg2" "agg3" "agg4" "agg5")
 declare -a step2=("tor0" "tor1" "tor2")
 #declare -a bottleneck=("core0")
@@ -63,15 +63,16 @@ kill_senders ()
 	echo killing source iperf3s
 	for host in "${sources[@]}"
 	do
-		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f killall iperf3
+		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f sudo killall iperf3
+		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f sudo killall node_init.sh
 	done
 }
 
 kill_sinks ()
 {
 	echo killing sink iperf3s
-	ssh -oStrictHostKeyChecking=no ${uname}@${exp_sink} -i $keyfile -f killall iperf3
-	ssh -oStrictHostKeyChecking=no ${uname}@${o_sink} -i $keyfile -f killall iperf3
+	ssh -oStrictHostKeyChecking=no ${uname}@${exp_sink} -i $keyfile -f sudo killall iperf3
+	ssh -oStrictHostKeyChecking=no ${uname}@${o_sink} -i $keyfile -f sudo killall iperf3
 }
 
 cleanup ()
@@ -86,6 +87,9 @@ trap cleanup SIGINT SIGTERM
 
 run_q_capture=0 # set to 1 to capture parallel queue logs as csv at the emulator node # not implemented yet
 
+buffer_scaler=250 #250 #125 # set to 250 for 2*BDP buffers
+
+fair_q=1
 round_robin=0 # use round robin packet placement if 1, use port number based placement if 0
 prob=1 # # use probabilistic if 1 and rr is 0, use port number based placement if 0
 
@@ -103,7 +107,7 @@ do
 
     #RTT=10 # Base RTT in milliseconds
     
-	for RTT in 10 # 16 #8 # 4 12 #1 5 10 # 15 25 50 # 3 25
+	for RTT in 20 # 10 # 16 #8 # 4 12 #1 5 10 # 15 25 50 # 3 25
 	do
 		RTT_par_us=$(expr $(expr $RTT \* 1000) / 4 )  # Base RTT to be applied per step in microseconds, will be added at 4 separate places
 		RTT_us=$(expr $RTT \* 1000)
@@ -113,15 +117,21 @@ do
 			echo "lam 0.$lam"
 			for N in 8 #1 2 4 8 16 #32 # 64 # switch size
 			do
-				for cap_ind in 5 #6 #5 #5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
+				for cap_ind in 5 # 4 #6 #5 #5 4 3 2 1  #4 # switch capacity 100 500 1000 4000 10000
 				do
 					echo '************************'
 					echo algortihm = $alg_ind '(1 rack, 2 dupthresh, 3 dupack)'
 					echo RTT = $RTT ms
 					echo N = $N
 					echo "lam 0.$lam"
+					echo N_FLOWS_P_NODE= $N_FLOWS_P_NODE
 					echo network_capacity= ${switch_cap[$cap_ind]} 
 					echo '************************'
+
+					network_capacity=${switch_cap[$cap_ind]}
+					echo $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 )
+					echo 'make sure this is not zero'
+					echo $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500)
 					
 		
 
@@ -132,8 +142,8 @@ do
 					sudo tc qdisc del dev $(eval echo $int2exp_sink) root
 					echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) root handle 1: htb default $(expr $N + 11)"
 					sudo tc qdisc add dev $(eval echo $int2exp_sink) root handle 1: htb default $(expr $N + 11)
-					echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1: classid 1:1 htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit"
-					sudo tc class add dev $(eval echo $int2exp_sink) parent 1: classid 1:1 htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit
+					echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1: classid 1:1 htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit quantum 3028"
+					sudo tc class add dev $(eval echo $int2exp_sink) parent 1: classid 1:1 htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit quantum 3028
 					echo "sudo iptables -t mangle -F"
 					sudo iptables -t mangle -F
 
@@ -149,8 +159,11 @@ do
 						echo "----reset root to add fq---"
 						echo "sudo tc qdisc del dev $(eval echo $int2exp_sink) root"
 						sudo tc qdisc del dev $(eval echo $int2exp_sink) root
-						echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit"
-						sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit
+						#echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) flow_limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) quantum 1514 initial_quantum 1514" # in packets
+						#sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) flow_limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) quantum 1514 initial_quantum 1514
+						# edit 2/6/23
+						echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) flow_limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) quantum 3028 initial_quantum 3028 buckets $N" # in packets
+						sudo tc qdisc add dev $(eval echo $int2exp_sink) root fq nopacing maxrate ${switch_cap[$cap_ind]}mbit limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) flow_limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) quantum 3028 initial_quantum 3028 buckets $N
 
 						#echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) fq nopacing maxrate ${switch_cap[$cap_ind]}mbit"
 						#sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$(expr $N + 11) fq nopacing maxrate ${switch_cap[$cap_ind]}mbit
@@ -165,10 +178,13 @@ do
 					then
 						for ind in $(seq 11 1 $(expr $N + 10) )
 						do
-							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
-							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
-							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 )" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
-							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
+							#echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
+							#sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
+							# edit 2/6/23
+							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit quantum 3028"
+							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit quantum 3028
+							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 )" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
+							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
 							echo "sudo iptables -A PREROUTING -m statistic --mode nth --every $(expr $N - $(expr $ind - 11)) --packet 0 -t mangle --destination 10.14.0.0/16 --source 10.10.0.0/16 -j MARK --set-mark $ind" # DO NOT FORGET TO CHANGE THE VAL BELOW FOR HASHING
 							sudo iptables -A PREROUTING -m statistic --mode nth --every $(expr $N - $(expr $ind - 11)) --packet 0 -t mangle --destination 10.14.0.0/16 --source 10.10.0.0/16 -j MARK --set-mark $ind
 							sudo iptables -A PREROUTING -m mark --mark $ind -t mangle -j RETURN
@@ -185,10 +201,17 @@ do
 					then
 						for ind in $(seq 11 1 $(expr $N + 10) )
 						do
-							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
-							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
-							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 )" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
-							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
+							#echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
+							#sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
+							# edit 2/6/23
+							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit quantum 3028"
+							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${switch_cap[$cap_ind]}mbit ceil ${switch_cap[$cap_ind]}mbit quantum 3028
+							#BFIFO BUFFERS
+							#echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 )" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
+							#sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
+							#PFIFO BUFFERS
+							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: pfifo limit $(expr $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500)" 
+							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: pfifo limit $(expr $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500)
 							echo "sudo iptables -A PREROUTING -m statistic --mode random --probability $(bc <<< "scale=6; 1/$(expr $N - $(expr $ind - 11))")  -t mangle --destination 10.14.0.0/16 --source 10.10.0.0/16 -j MARK --set-mark $ind" 
 							sudo iptables -A PREROUTING -m statistic --mode random --probability 0$(bc <<< "scale=6; 1/$(expr $N - $(expr $ind - 11))") -t mangle --destination 10.14.0.0/16 --source 10.10.0.0/16 -j MARK --set-mark $ind
 							sudo iptables -A PREROUTING -m mark --mark $ind -t mangle -j RETURN
@@ -211,8 +234,8 @@ do
 						do
 							echo "sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit"
 							sudo tc class add dev $(eval echo $int2exp_sink) parent 1:1 classid 1:$ind htb rate ${que_cap}mbit ceil ${que_cap}mbit
-							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 )"
-							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes
+							echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 )"
+							sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$ind handle ${ind}0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes
 
 							ranges="$(expr 60000 + $(expr $(expr $ind - 11) \* $port_step) ):$(expr 59999 + $(expr $(expr $ind - 10) \* $port_step) )"
 					        ranges="${ranges},$(expr 60800 + $(expr $(expr $ind - 11) \* $port_step) ):$(expr 60799 + $(expr $(expr $ind - 10) \* $port_step) )"
@@ -241,8 +264,12 @@ do
 					#echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: tbf rate 20mbit buffer 1600 limit 3000"
 					#sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: tbf rate 10mbit buffer 16000 limit 3000
 
-					echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 )" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
-					sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: bfifo limit $(expr $(expr $(expr ${que_cap} \* 250 ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
+					# BFIFO BUFFERS
+					#echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 )" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
+					#sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: bfifo limit $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
+					# PFIFO BUFFERS
+					echo "sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: pfifo limit $(expr $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500)" # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive (org value was 250) - CURRENTLY TAILORED TO 2*BDP for N=16 or the equal sum (2*BDP*16/N) for all other cases
+					sudo tc qdisc add dev $(eval echo $int2exp_sink) parent 1:$(expr $N + 11) handle $(expr $N + 11)0: pfifo limit $(expr $(expr $(expr $(expr ${que_cap} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) # 2*BDP of that link in in bytes # PLAYING AROUND WITH THE BUFFER CAPACITIES - currently left at 8 times - not adaptive
 
 
 					## second sink
@@ -257,8 +284,13 @@ do
 					sudo tc class add dev $(eval echo $int2o_sink) parent 1: classid 1:1 htb rate ${network_capacity}mbit ceil ${network_capacity}mbit 
 					echo "sudo tc class add dev $(eval echo $int2o_sink) parent 1:1 classid 1:19 htb rate ${network_capacity}mbit ceil ${network_capacity}mbit"
 					sudo tc class add dev $(eval echo $int2o_sink) parent 1:1 classid 1:19 htb rate ${network_capacity}mbit ceil ${network_capacity}mbit
-					echo "sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: bfifo limit $(expr $(expr $(expr ${network_capacity} \* 250 ) \* $RTT_us ) / 1000 )" # 2*BDP of that link in bytes
-					sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: bfifo limit $(expr $(expr $(expr ${network_capacity} \* 250 ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes
+					#BFIFO BUFFERS
+					#echo "sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: bfifo limit $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 )" # 2*BDP of that link in bytes
+					#sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: bfifo limit $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) # 2*BDP of that link in in bytes
+					# PFIFO BUFFERS
+					echo "sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: pfifo limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500)" 
+					sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: pfifo limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) 
+
 
 					echo "Press any key to move to next experiment (1)"
 					while [ true ] ; do
@@ -568,6 +600,25 @@ do
 						sleep $exp_time_safe
 						kill_senders
 						sleep 2
+
+						mkdir -p $location/flowgen_logs
+
+						node_id=0 # should be a number from 0 to n
+						for host in "${sources[@]}"
+						do
+							echo "transferring flowgen logs from $host"
+							scp  -i $keyfile ${uname}@${host}:/users/${uname}/n${node_id}_flowgen.log $location/flowgen_logs
+							node_id=$(expr $node_id + 1)
+						done
+
+						touch combined_flowgen.log
+						# Concatenate the log files for node IDs 0 to 11
+						for i in {0..11}; do
+						    cat "${location}/flowgen_logs/n${i}_flowgen.log" >> combined.log
+						done
+
+
+
 
 						echo "Press any key to move to start the iperf log transfer"
 						while [ true ] ; do

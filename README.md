@@ -25,7 +25,6 @@ https://drive.google.com/drive/folders/156-LIkzNkzj4xJ4mGw0_7vBk7mW816Ov?usp=sha
 Also use what is inside trace_gen to generate the flows. That requires the package from this repo:
 https://github.com/piotrjurkiewicz/flow-models
 
-## Experiment Profile and Rspecs
-Latest versions of rspecs are porivded both for geni and Cloudlab
-(though the cloudlab version is out of date as the other cloudlab format is currently being used at the profile. The profile is available below:)
-https://www.cloudlab.us/show-profile.php?uuid=a96d8311-cd81-11ec-ba12-e4434b2381fc
+## Experiment Profile
+You can use the following Cloudlab profile to initiate the 24 node topology used for the experiments with a couple of clicks.
+https://www.cloudlab.us/show-profile.php?uuid=c672ee4b-4fbf-11ed-994d-e4434b2381fc
