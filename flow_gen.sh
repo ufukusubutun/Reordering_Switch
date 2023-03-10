@@ -7,7 +7,6 @@ to_other_sink=$4
 port_num=$5 #  $(expr 60000 + $(expr $(expr 10 \* $node_id) + $flow_gen_id))
 cap=$6
 
-#exp_params_rec=$6 #'alg_ind, RTT, lam, N, cap, trial'
 
 
 TO_EXP_SINK=0
@@ -57,52 +56,11 @@ while [ $SECONDS -lt $end ] && read line ; do
     payload=$line
 
     # increase cap to 1 GB
-    if [ $payload -ge 2500 ] && [ $payload -le 1000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
+    if [ $payload -ge 2500 ] && [ $payload -le 1000000000 ] # ignore flow sizes larger than 1 GB and smaller than 2500B
     then
         flw_start_time=$(date +%s%N)
-        iperf3 -c $destination -p $port_num -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
+        iperf3 -c $destination -p $port_num -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # no longer output json, -J flag can be used
         
-
-        #if [ $payload -ge 128000001 ]
-        #then
-        #    flw_start_time=$(date +%s%N)
-        #    #  --cport $port_num
-        #    #iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        #    iperf3 -c $destination -p $port_num -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
-        #
-        #elif [ $payload -ge 1001 ]
-        #then
-        #    len=$(expr $payload / 1000) #128000
-        #    #num=$(expr $payload / $len)
-        #    #  --cport $port_num
-        #    flw_start_time=$(date +%s%N)
-        #    #iperf3 -c $destination -p $port_num -J -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        #    iperf3 -c $destination -p $port_num -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
-        #else
-        #    flw_start_time=$(date +%s%N)
-        #    #iperf3 -c $destination -p $port_num -J -n 1000 -l 1000 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        #    iperf3 -c $destination -p $port_num -n 1000 -l 1000 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
-        #fi
-        
-
-
-        # OLD VERSION WITH smaller than 1001B
-        #elif [ $payload -ge 1001 ]
-        #then
-        #    len=$(expr $payload / 1000) #128000
-        #    #num=$(expr $payload / $len)
-        #    #  --cport $port_num
-        #    flw_start_time=$(date +%s%N)
-        #    iperf3 -c $destination -p $port_num -J -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        #else
-        #    flw_start_time=$(date +%s%N)
-        #    iperf3 -c $destination -p $port_num -J -n $payload -l 1 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        #fi
-
-
-
-        #iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-
         ever_waited=0
         wait_start_time=$(date +%s%N)
 
@@ -130,9 +88,5 @@ if [[ $flow_gen_id -eq 1 ]]; then
 fi
 
 
-
-#echo "node_id $node_id flow_gen_id $flow_gen_id flow_ind $flow_ind"
-
-#rm ~/n$node_id-f$flow_gen_id/*
 
 
