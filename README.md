@@ -1,5 +1,10 @@
 # Reordering_Switch
 
+WORK IN PROGRESS - will be updated soon for reviewers of IEEE HPSR 2023
+
+
+
+
 ## Running Experiment
 All experiment files are to be trensfered to the emulator node.
 (Including flow size traces that (will be) available at this link):
