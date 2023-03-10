@@ -2,7 +2,7 @@
 
 WORK IN PROGRESS - will be updated soon for reviewers of IEEE HPSR 2023
 
-
+This is the development branch. All kinds of scripts I wrote, used, tried can be found here. Most things are likely to not work or be undocumented. Experiment at your own risk.
 
 
 ## Running Experiment
