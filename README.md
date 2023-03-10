@@ -1,6 +1,8 @@
-# Reordering_Switch
+# Do Switches Still Have to Deliver Packets in Sequence?
 
 WORK IN PROGRESS - will be updated soon for reviewers of IEEE HPSR 2023
+
+Please see submission to IEEE HPSR 2023 to understand this study.
 
 
 
@@ -17,11 +19,11 @@ The 'set_up.sh' script should be run in order to transfer all scripts and files 
 Then the experiment is performed thru the 'automated_exp_v2 script'. (To set parameters, that script should be modified.)
 This script will call node_init, flow_gen and server_init at the corresponding nodes and will set queues and bottlenecks thru ssh
 
+## Experiment Profile
+You can use the following Cloudlab profile to initiate the 24 node topology used for the experiments with a couple of clicks.
+https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc
 
 ## Trace-Generation
 Also use what is inside trace_gen to generate the flows. That requires the package from this repo:
 https://github.com/piotrjurkiewicz/flow-models
 
-## Experiment Profile
-You can use the following Cloudlab profile to initiate the 24 node topology used for the experiments with a couple of clicks.
-https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc
