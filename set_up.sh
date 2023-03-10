@@ -9,6 +9,9 @@ uname="uu20010"
 keyfile='~/.ssh/ufuk'
 chmod 400 ~/.ssh/ufuk
 
+sudo chmod -R a+w /mydata
+
+
 declare -a sources=("node-0" "node-1" "node-2" "node-3" "node-4" "node-5" "node-6" "node-7" "node-8" "node-9" "node-10" "node-11")
 declare -a step1=("agg0" "agg1" "agg2" "agg3" "agg4" "agg5")
 declare -a step2=("tor0" "tor1" "tor2")

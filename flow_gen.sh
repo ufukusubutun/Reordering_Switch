@@ -36,7 +36,14 @@ touch ~/n${node_id}_flowgen.log
 
 
 #rand_delay_m=$(expr $(expr 8000 \* 10 ) / $cap ) # 1 MB/cap(mbps) in ms x 10 (8000/cap) 
-rand_delay_m=$(expr $(expr 20000 \* 10 ) / $cap ) # 2.5 MB/cap(mbps) in ms x 10 (8000/cap) 
+#rand_delay_m=$(expr $(expr 20000 \* 10 ) / $cap ) # 2.5 MB/cap(mbps) in ms x 10 (8000/cap) 
+#rand_delay_m=$(expr $(expr 40000 \* 10 ) / $cap ) # 5 MB/cap(mbps) in ms x 10 (8000/cap) 
+#rand_delay_m=$(expr $(expr 80000 \* 10 ) / $cap ) # 10 MB/cap(mbps) in ms x 10 (8000/cap) 
+#rand_delay_m=$(expr $(expr 160000 \* 10 ) / $cap ) # 20 MB/cap(mbps) in ms x 10 (8000/cap) 
+#rand_delay_m=$(expr $(expr 240000 \* 10 ) / $cap ) # 30 MB/cap(mbps) in ms x 10 (8000/cap) 
+rand_delay_m=$(expr $(expr 280000 \* 10 ) / $cap ) # 35 MB/cap(mbps) in ms x 10 (8000/cap) 
+#rand_delay_m=$(expr $(expr 320000 \* 10 ) / $cap ) # 40 MB/cap(mbps) in ms x 10 (8000/cap) 
+
 
 #echo rand_delay_m= $rand_delay_m
 
@@ -45,40 +52,74 @@ end=$(( SECONDS + $duration))
 flow_ind=0
 while [ $SECONDS -lt $end ] && read line ; do
     # calculate the random wait and record timestamp
-    random_wait=$(shuf -i ${rand_delay_m}-$(expr $rand_delay_m \* 10) -n 1) # random wait in ms 
-    flw_start_time=$(date +%s%N)
+    random_wait=$(shuf -i ${rand_delay_m}-$(expr $rand_delay_m \* 3) -n 1) # random wait in ms 
 
     payload=$line
 
     # increase cap to 1 GB
-    if [ $payload -le 1000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
+    if [ $payload -ge 2500 ] && [ $payload -le 1000000000 ] # 30000000 ignore flow sizes larger than 30 MB as it won't terminate during the experiment
     then
-
-        if [ $payload -ge 128000001 ]
-        then
-            #  --cport $port_num
-            iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        elif [ $payload -ge 1001 ]
-        then
-            len=$(expr $payload / 1000) #128000
-            #num=$(expr $payload / $len)
-            #  --cport $port_num
-            iperf3 -c $destination -p $port_num -J -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        else
-            #  --cport $port_num
-            iperf3 -c $destination -p $port_num -J -n $payload -l 1 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
-        fi
+        flw_start_time=$(date +%s%N)
+        iperf3 -c $destination -p $port_num -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
         
+
+        #if [ $payload -ge 128000001 ]
+        #then
+        #    flw_start_time=$(date +%s%N)
+        #    #  --cport $port_num
+        #    #iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        #    iperf3 -c $destination -p $port_num -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
+        #
+        #elif [ $payload -ge 1001 ]
+        #then
+        #    len=$(expr $payload / 1000) #128000
+        #    #num=$(expr $payload / $len)
+        #    #  --cport $port_num
+        #    flw_start_time=$(date +%s%N)
+        #    #iperf3 -c $destination -p $port_num -J -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        #    iperf3 -c $destination -p $port_num -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
+        #else
+        #    flw_start_time=$(date +%s%N)
+        #    #iperf3 -c $destination -p $port_num -J -n 1000 -l 1000 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        #    iperf3 -c $destination -p $port_num -n 1000 -l 1000 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json # turned off json
+        #fi
+        
+
+
+        # OLD VERSION WITH smaller than 1001B
+        #elif [ $payload -ge 1001 ]
+        #then
+        #    len=$(expr $payload / 1000) #128000
+        #    #num=$(expr $payload / $len)
+        #    #  --cport $port_num
+        #    flw_start_time=$(date +%s%N)
+        #    iperf3 -c $destination -p $port_num -J -n $payload -l $len > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        #else
+        #    flw_start_time=$(date +%s%N)
+        #    iperf3 -c $destination -p $port_num -J -n $payload -l 1 > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
+        #fi
+
+
+
         #iperf3 -c $destination -p $port_num -J -n $payload > ~/n$node_id-f$flow_gen_id/n$node_id-f$flow_gen_id-i$flow_ind.json
 
-        flow_ind=$(expr $flow_ind + 1)
+        ever_waited=0
+        wait_start_time=$(date +%s%N)
 
         # wait until random wait has elapsed
         while [ $(expr $(expr $(date +%s%N) - $flw_start_time) / 1000000) -lt $random_wait ]; do
-            sleep .0001 # sleep 0.1 ms
+            sleep .001 # sleep 1 ms
+            ever_waited=1
         done
-        #                                                                                         when it started    random wait                    real wait
-        echo ${node_id}, ${flow_gen_id}, ${duration}, ${to_other_sink}, ${port_num}, ${payload}, ${flw_start_time}, ${random_wait}, $(expr $(expr $(date +%s%N) - $flw_start_time) / 1000000)  >> ~/n${node_id}_flowgen.log
+
+        time_now=$(date +%s%N)
+        wait_in_loop=$(expr $(expr $time_now - $wait_start_time) / 1000000)
+        real_total_wait=$(expr $(expr $time_now - $flw_start_time) / 1000000)
+
+        #                                                                                         when it started    random wait                                   real wait
+        echo ${node_id}, ${flow_gen_id}, ${duration}, ${to_other_sink}, ${port_num}, ${payload}, ${flw_start_time}, ${random_wait}, $ever_waited, $wait_in_loop, $real_total_wait >> ~/n${node_id}_flowgen.log
+
+        flow_ind=$(expr $flow_ind + 1)
 
     fi
 

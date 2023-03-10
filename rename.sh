@@ -6,3 +6,4 @@ mv -i egress_cap2.pcap $exp_save_name-egress_cap2.pcap
 mv -i ingress_cap1.pcap $exp_save_name-ingress_cap1.pcap
 mv -i ingress_cap2.pcap $exp_save_name-ingress_cap2.pcap
 mv -i ingress_cap3.pcap $exp_save_name-ingress_cap3.pcap
+mv -i combined_flowgen.log ${exp_save_name}-combined_flowgen.log
