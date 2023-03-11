@@ -1,6 +1,6 @@
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#readme) to go back to the main readme page.
 
-<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="25%" >
 
 ## Experiment Profile
 

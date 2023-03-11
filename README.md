@@ -37,4 +37,5 @@ Detailed instructions on running the experiment can be found [here](https://gith
 
 ## Post-Processing
 
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/plot.png"  width="20%" >
 
