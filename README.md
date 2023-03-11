@@ -40,5 +40,7 @@ Detailed instructions on running the experiment can be found [here](https://gith
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/plot.png"  width="35%" >
 
+Detailed instructions on post-processing and generating plots can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/post_p.md).
+
 Made at [this jupyter notebook](https://colab.research.google.com/drive/1e-DUvf5FcGuIN_EmctMthfrdv4Dsvb41?usp=sharing)
 
