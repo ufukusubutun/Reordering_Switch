@@ -26,11 +26,12 @@ Detailed information and instructions on initializing the topology on Cloudlab c
 
 ## Trace-Generation
 
+TCP flows were generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. Their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), was used to generate the traces.
+
 Detailed instructions on trace generation can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md).
 
 
-
-## Running Experiment
+## Running the Experiment
 
 Detailed instructions on running the experiment can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md).
 
