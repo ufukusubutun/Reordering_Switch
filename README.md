@@ -7,8 +7,7 @@ Please see submission to IEEE HPSR 2023 to understand this study.
 
 ## Experiment Profile
 
-![Alt text](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png)
-
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
 Detailed instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md).
 
