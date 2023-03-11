@@ -6,7 +6,14 @@ Please don't forget to review the study submitted to IEEE HPSR 2023 to better un
 
 Aim, how, why??
 
-To reproduce the results:
+To reproduce the results you can follow the steps below. In general term the procedure is as follows:
+
+* Instantiate the topology at Cloudlab
+* Generate/copy TCP trace files
+* Move required scripts into the work directory and run scripts to conduct the experiments.
+* Capture packets at ingress/egress ports of the switch emulating node.
+* Post-process results to obtain measurements and produce plots.
+
 
 ## Experiment Profile
 
