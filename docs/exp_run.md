@@ -1,7 +1,7 @@
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#readme) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-experiment) to go back to the main readme page.
 
 
-## Running Experiment
+## Running The Experiment
 
 All experiment files are to be trensfered to the emulator node.
 (Including flow size traces that are available at this link):
@@ -15,4 +15,4 @@ Then the experiment is performed thru the 'automated_exp_v2 script'. (To set par
 This script will call node_init, flow_gen and server_init at the corresponding nodes and will set queues and bottlenecks thru ssh
 
 
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#readme) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-experiment) to go back to the main readme page.

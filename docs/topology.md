@@ -1,4 +1,4 @@
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#readme) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch#experiment-profile) to go back to the main readme page.
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="25%" >
 
@@ -22,5 +22,5 @@ The topology comes built in with a temporary 120 GB storage (that is wiped at th
 The topology also allows you to attach a permanent storage (termed long term dataset in Cloudlab jargon.) To have access to a long term dataset create your own dataset under Storage > Create Dataset and enter the URN address when instantiating the topolgy using the provided profile. This storage will be built in under `/mypermdata`.
 
 
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#readme) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch#experiment-profile) to go back to the main readme page.
 

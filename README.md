@@ -17,21 +17,21 @@ To reproduce the results you can follow the steps below. In general term the pro
 
 ## Experiment Profile
 
-<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
-
 The experiments were realized at the [Cloudlab Testbed](https://www.cloudlab.us/) using a 24 node topology making use of bare metal servers. The topology profile can be found [here](https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc).
+
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
 Detailed information and instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md).
 
 
-## Trace-Generation
+## Trace Generation
 
 TCP flows were generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. Their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), was used to generate the traces.
 
 Detailed instructions on trace generation can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md).
 
 
-## Running the Experiment
+## Running The Experiment
 
 Detailed instructions on running the experiment can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md).
 
@@ -39,4 +39,6 @@ Detailed instructions on running the experiment can be found [here](https://gith
 ## Post-Processing
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/plot.png"  width="35%" >
+
+Made at [this jupyter notebook](https://colab.research.google.com/drive/1e-DUvf5FcGuIN_EmctMthfrdv4Dsvb41?usp=sharing)
 
