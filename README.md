@@ -2,15 +2,19 @@
 
 WORK IN PROGRESS - will be updated soon for reviewers of IEEE HPSR 2023
 
-Please see submission to IEEE HPSR 2023 to understand this study.
+Please don't forget to review the study submitted to IEEE HPSR 2023 to better understand this study.
 
+Aim, how, why??
+
+To reproduce the results:
 
 ## Experiment Profile
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
-Detailed instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md).
+The experiments were realized at the [Cloudlab Testbed](https://www.cloudlab.us/) using a 24 node topology making use of bare metal servers. The topology profile can be found [here](https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc).
 
+Detailed information and instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md).
 
 
 ## Trace-Generation
