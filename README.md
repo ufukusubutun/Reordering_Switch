@@ -1,6 +1,6 @@
 # Do Switches Still Have to Deliver Packets in Sequence?
 
-WORK IN PROGRESS - will be updated soon for reviewers of IEEE HPSR 2023
+WORK IN PROGRESS - being updated for reviewers of IEEE HPSR 2023
 
 Please don't forget to review the study submitted to IEEE HPSR 2023 to better understand this study.
 

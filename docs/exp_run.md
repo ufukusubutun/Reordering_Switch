@@ -15,4 +15,16 @@ Then the experiment is performed thru the 'automated_exp_v2 script'. (To set par
 This script will call node_init, flow_gen and server_init at the corresponding nodes and will set queues and bottlenecks thru ssh
 
 
+	sudo tcpdump -B 4096 -n -i $(ip route get 10.14.1.2 | grep -oP "(?<= dev )[^ ]+") -s 64 -w egress_cap1.pcap tcp dst portrange 50000-59600
+
+	sudo tcpdump -B 4096 -n -i $(ip route get 10.14.2.2 | grep -oP "(?<= dev )[^ ]+") -s 64 -w egress_cap2.pcap tcp dst portrange 50000-59600
+
+	sudo tcpdump -B 4096 -n -i $(ip route get 10.10.1.1 | grep -oP "(?<= dev )[^ ]+") -s 64 -w ingress_cap1.pcap tcp dst portrange 50000-59600
+
+	sudo tcpdump -B 4096 -n -i $(ip route get 10.10.5.1 | grep -oP "(?<= dev )[^ ]+") -s 64 -w ingress_cap2.pcap tcp dst portrange 50000-59600
+
+	sudo tcpdump -B 4096 -n -i $(ip route get 10.10.9.1 | grep -oP "(?<= dev )[^ ]+") -s 64 -w ingress_cap3.pcap tcp dst portrange 50000-59600
+
+
+
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-experiment) to go back to the main readme page.
