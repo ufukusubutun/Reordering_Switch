@@ -4,6 +4,24 @@ WORK IN PROGRESS
 
 ## Running The Experiment
 
+
+At this stage, it is assumed that, you have a Cloudlab experiments reserved and running, cloned the repository into the work directory and have the TCP flow size traces ready. If you haven't done so, please [go back](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) and complete those steps.
+
+
+
+
+	sudo apt-get update
+	sudo apt-get -y install tshark
+
+Pick YES (or OK and then YES) if prompted.
+
+
+
+
+Permission denied (publickey).
+
+
+
 All experiment files are to be trensfered to the emulator node.
 (Including flow size traces that are available at this link):
 https://drive.google.com/drive/folders/13lMalGCIaGQ8IE_72NblcA9p2WbxnvYf?usp=sharing

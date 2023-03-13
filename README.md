@@ -23,19 +23,19 @@ The experiments were realized at the [Cloudlab Testbed](https://www.cloudlab.us/
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
-Detailed information and instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#experiment-profile).
+Please follow the detailed information and instructions on initializing the topology on Cloudlab and setting up the experiment environment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#experiment-profile).
 
 
 ## Trace Generation
 
 TCP flows were generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. Their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), was used to generate the traces.
 
-Detailed instructions on trace generation can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md).
+Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md).
 
 
 ## Running The Experiment
 
-Detailed instructions on running the experiment can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md).
+Please follow the detailed instructions on running the experiment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md).
 
 
 ## Post-Processing

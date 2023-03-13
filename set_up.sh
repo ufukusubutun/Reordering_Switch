@@ -51,7 +51,7 @@ do
 	echo "sudo tc qdisc del dev $int2exp_sink root"
 	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile "sudo tc qdisc del dev $int2exp_sink root"
 	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile echo "${host} done!"
-	if $update = 1
+	if $update == 1
 	then
 		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f "sudo apt -y update; sudo apt-get -y update; sudo apt-get -y install iperf3 moreutils jq"
 	fi
@@ -72,7 +72,7 @@ do
 
 	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile echo "${host} done!"
 
-	if $update = 1
+	if $update == 1
 	then
 		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f "sudo apt -y update; sudo apt-get -y update; sudo apt-get -y install iperf3 moreutils"
 	fi	
@@ -93,7 +93,7 @@ do
 		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile "sudo tc qdisc del dev $int2node root"
 	done
 	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile echo "${host} done!"
-	if $update = 1
+	if $update == 1
 	then
 		ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f "sudo apt -y update; sudo apt-get -y update; sudo apt-get -y install iperf3 moreutils"
 	fi
@@ -120,11 +120,11 @@ for i in $ifs; do
   sudo ethtool -K $i ufo off
 done
 
-if $update = 1
+if $update == 1
 then
 	sudo apt -y update 
 	sudo apt-get -y update
-	sudo apt-get -y install iperf3 moreutils jq tshark
+	sudo apt-get -y install iperf3 moreutils # jq tshark
 fi
 # handle node facing interfaces
 for n in 1 5 9
@@ -146,7 +146,7 @@ int2node_gen 1 # any node would work
 echo "sudo tc qdisc del dev $int2node root"
 ssh -oStrictHostKeyChecking=no ${uname}@${exp_sink} -i $keyfile "sudo tc qdisc del dev $int2node root"
 ssh -oStrictHostKeyChecking=no ${uname}@$exp_sink -i $keyfile echo "${exp_sink} done!"
-if $update = 1
+if $update == 1
 then
 	ssh -oStrictHostKeyChecking=no ${uname}@${exp_sink} -i $keyfile -f "sudo apt -y update; sudo apt-get -y update; sudo apt-get -y install iperf3 moreutils jq"
 fi
@@ -159,7 +159,7 @@ int2node_gen 1 # any node would work
 echo "sudo tc qdisc del dev $int2node root"
 ssh -oStrictHostKeyChecking=no ${uname}@${o_sink} -i $keyfile "sudo tc qdisc del dev $int2node root"
 ssh -oStrictHostKeyChecking=no ${uname}@$o_sink -i $keyfile echo "${o_sink} done!"
-if $update = 1
+if $update == 1
 then
 	ssh -oStrictHostKeyChecking=no ${uname}@${o_sink} -i $keyfile -f "sudo apt -y update; sudo apt-get -y update; sudo apt-get -y install iperf3 moreutils jq"
 fi

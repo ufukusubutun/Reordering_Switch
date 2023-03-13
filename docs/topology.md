@@ -19,7 +19,7 @@ The topology comes built in with a temporary 120 GB storage (that is wiped at th
 
 In order to instantiate the topology, navigate to the [cloudlab profile](https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc) and click on 'Instantiate'. You will need a Cloudlab account.
 
-This will bring about a page with customazible parameters including what hardware to use for specific node on the topology, link capacities to request and a possibility to attach a permenant Cloudlab Storage space (called 'dataset'). The defeault parameters would provide the environment we used on the paper. However, to be able to effectively work with multiple experiments and store results, you may want to create a dataset through your Cloudlab account, see [AdvanvedTODO]().
+This will bring about a page with customazible parameters including what hardware to use for specific node on the topology, link capacities to request and a possibility to attach a permenant Cloudlab Storage space (called 'dataset'). The defeault parameters would provide the environment we used on the paper. However, to be able to effectively work with multiple experiments and store results, you may want to create a dataset through your Cloudlab account, see [Advanved](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#advanced).
 
 Once you are done with the parameters you can keep clicking next and set the duration you want to run this experiment for. If you are asked to choose a cluster, pick Utah as this is where the nodes we asked for are located.
 
@@ -29,7 +29,17 @@ Once we request the resources, it might be the case that resources are not immed
 
 Once the experiment reaches a ready status, ssh into the emulator node following the link provided by Cloudlab on the list view. You will need an ssh key file both to be able to ssh into the emulator node from your own system and also to be able to communicate with all the nodes during experiments.
 
-Transfer your key file into your your work directory. This file will be needed.
+Transfer your ssh key file into your your work directory. This file will be needed. This can be done by running the following `scp` command in your local computer.
+
+	scp -i <location/of/your/keyfile> <location/of/your/keyfile> <your-username>@<your-emulators-hw>.utah.cloudlab.us:/users/<your-username>/.ssh/
+
+### Cloning the Repository
+
+Clone this repository into your work directory with the following command:
+
+	git clone https://github.com/ufukusubutun/Reordering_Switch.git
+
+Once you cloned the repository, we will need take one more step before we can run the experiments. We will need to have TCP flow size traces to work with. Click here to switch to the detailed explanations.
 
 ### Advanced 
 
