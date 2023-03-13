@@ -4,7 +4,7 @@ WORK IN PROGRESS - being updated for reviewers of IEEE HPSR 2023
 
 This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' submitted to IEEE HPSR 2023. To better undertand the motivation and takeaways, please don't forget to check our paper.
 
-We aim to evaluate the resilience of contemporary TCP loss detection (formally called 'recovery') algorithms under patterns of reordering that would be caused by a load-balanced switch located at the network core. The internet core typically has high line rates and large number of flows getting mixed. And our evaluation of load-balanced switches is inspired by the [Load-Balanced Birkhoff-von Neumann Switche design of C.S. Chang](https://web.stanford.edu/class/ee384y/Handouts/BVN-Switches-Chang.pdf)
+We aim to evaluate the resilience of contemporary TCP loss detection (formally called 'recovery') algorithms under patterns of reordering that would be caused by a load-balanced switch located at the network core. The internet core typically has high line rates and large number of flows getting mixed. And our evaluation of load-balanced switches is inspired by the [Load-Balanced Birkhoff-von Neumann Switch design of C.S. Chang](https://web.stanford.edu/class/ee384y/Handouts/BVN-Switches-Chang.pdf)
 
 The experiments involve, generating thousands of flows at nodes located at the branches of a tree. This traffic is mixed and sent through an emulator node where we implement the effect of the desired switch architecture on software. And the traffic terminates at sinks. While the traffic crosses the switch, we collect packet header captures at ingress and egress nodes of the 'emulator' node and post-process those to conduct measurements.
 
@@ -23,7 +23,7 @@ The experiments were realized at the [Cloudlab Testbed](https://www.cloudlab.us/
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
-Detailed information and instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md).
+Detailed information and instructions on initializing the topology on Cloudlab can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#experiment-profile).
 
 
 ## Trace Generation
