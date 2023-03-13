@@ -16,6 +16,17 @@ At this stage, it is assumed that, you have a Cloudlab experiments reserved and 
 Pick YES (or OK and then YES) if prompted.
 
 
+Open `set_up.sh` with your favorite text editor (vim, nano) and complete the two parts maked with `--TODO--`. You will need to enter your Cloudlab username and the path to your ssh key. This is necessary in order to run the experiments from a single central node. The scripts will use `ssh` and `scp` to connect to all nodes and run necessary commands. Once you are done run: (NOTE ABOUT THE WORK DIR AND THE FILES)
+
+	bash set_up.sh
+
+Make sure you get no errors except for `Error: Cannot delete qdisc with handle of zero.` If you get errors with respect to ssh key, make sure you have your ssh key placed under `~/.ssh/` and updated the name of the file at the beginning of the set_up.bash properly. If you get an error with scp that involves `data_gen.zip` that means there is a problem with the trace files. They are either not generated or it is not placed in the directory you are working. 
+
+when you are done with the step above. Run the same command with the argument `u`. This will also run `apt-get update` and `apt-get install` commands at each node.
+
+	bash set_up.sh u
+
+
 
 
 Permission denied (publickey).

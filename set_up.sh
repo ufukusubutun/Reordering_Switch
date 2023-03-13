@@ -2,10 +2,18 @@
 
 update=$1
 
-#uname="uu2001"
+# ----------------------------------------------------------- #
+# TODO YOU MUST PUT YOUR OWN CLOUDLAB USERNAME HERE 
 uname="uu20010"
-keyfile='~/.ssh/ufuk'
-chmod 400 ~/.ssh/ufuk
+# ----------------------------------------------------------- #
+location='~'
+# ----------------------------------------------------------- #
+# TODO YOU MUST SPECIFY THE PATH TO YOUR OWN SSH KEY 
+keyfile="$location/.ssh/ufuk"
+# ----------------------------------------------------------- #
+
+
+chmod 400 $keyfile
 
 sudo chmod -R a+w /mydata
 
@@ -13,8 +21,6 @@ sudo chmod -R a+w /mydata
 declare -a sources=("node-0" "node-1" "node-2" "node-3" "node-4" "node-5" "node-6" "node-7" "node-8" "node-9" "node-10" "node-11")
 declare -a step1=("agg0" "agg1" "agg2" "agg3" "agg4" "agg5")
 declare -a step2=("tor0" "tor1" "tor2")
-#declare -a bottleneck=("core0")
-#emulator=thisNode
 exp_sink="sink"
 o_sink="sink2"
 
@@ -23,16 +29,11 @@ o_sink="sink2"
 
 int2exp_sink="\$(ip route get 10.14.1.2 | grep -oP \"(?<= dev )[^ ]+\")"
 int2o_sink="\$(ip route get 10.14.2.2 | grep -oP \"(?<= dev )[^ ]+\")"
-#intFromBtlnck="\$(ip route get 10.13.1.1 | grep -oP \"(?<= dev )[^ ]+\")"
 
 int2node_gen ()
 {
     int2node="\$(ip route get 10.10.${1}.1 | grep -oP \"(?<= dev )[^ ]+\")"
 }
-
-
-#mkdir -p ~/iperf_logs
-#mkdir -p ~/iperf_logs/workspace
 
 
 for host in "${sources[@]}"
@@ -97,13 +98,6 @@ do
 	fi
 	index=$( expr $index + 4 )
 done
-
-#for host in "${bottleneck[@]}"
-#do
-#	echo "sudo tc qdisc del dev $int2exp_sink root"
-#	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile -f "sudo tc qdisc del dev $int2exp_sink root"
-#	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile echo "${host} done!"
-#done
 
 ## TURN SEGMENTATION OFFLOADING OFF
 # Get a list of all experiment interfaces, excluding loopback
