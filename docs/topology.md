@@ -15,8 +15,10 @@ https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381
 The topology comes built in with a temporary 120 GB storage (that is wiped at the completion of the reservation.) This storage is built under `/mydata`.
 
 
-
-
+Instantitating:
+utah
+resources may not be immediately available, need to reserve
+you can try asking for virtual machines at first to set up the experiment environment and get familiar with the setup
 
 
 ### Advanced 
