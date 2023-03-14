@@ -12,8 +12,7 @@ To reproduce the results you can follow the steps below. In general terms, the p
 
 * Instantiate the topology at Cloudlab
 * Generate (or copy pre-prepared) TCP trace files
-* Move required scripts into the work directory on the 'emulator' node and run scripts to conduct the experiments.
-* Capture packets at ingress/egress ports of the switch emulating node.
+* Move required scripts into the work directory on the 'emulator' node and run scripts to conduct the experiments. Capture packets at ingress/egress ports of the switch emulating node.
 * Post-process results to obtain measurements and produce plots.
 
 

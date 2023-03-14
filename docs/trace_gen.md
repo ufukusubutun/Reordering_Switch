@@ -20,10 +20,15 @@ If this fails (as Google plays around with things,) you can still download it fr
 
 	sudo apt update
 	sudo apt install python3-pip
-	pip install flow-models
+	python -m pip install flow-models numpy pandas scipy
 	export PATH=$PATH:$HOME/.local/bin
-	python -m pip install numpy pandas scipy
 
+	cd trace_gen
+	git clone https://github.com/piotrjurkiewicz/flow-models.git
+
+This file generates 10000000 data points and chops it into 12 * numgen (200 by default) separate log files. These are then zipped into a single archive named `data_gen.zip`. If you need a larger number of points or need more flow generators update marked fields on `trace_gen.sh` with your favorite text editor (vim, nano).
+
+	bash trace_gen.sh
 
 Also use what is inside trace_gen to generate the flows. That requires the package from this repo:
 https://github.com/piotrjurkiewicz/flow-models
