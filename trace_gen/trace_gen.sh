@@ -2,7 +2,7 @@
 
 current_loc=$(pwd)
 echo current_loc: $current_loc
-model_loc="${current_loc}/flow-models/flow-models/data/agh_2015/mixtures/tcp/size"
+model_loc="${current_loc}/flow-models/data/agh_2015/mixtures/tcp/size"
 echo model_loc $model_loc
 num=10000000
 flow-models-generate -x size -s $num ${model_loc} > flows_w_bytes_raw.txt
