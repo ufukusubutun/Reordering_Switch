@@ -1,9 +1,10 @@
 #!/bin/bash
 
-model_loc='~/Reordering_Switch/trace_gen/flow-models/flow-models/data/agh_2015/mixtures/tcp/size'
+current_loc=$(pwd)
+model_loc="${current_loc}/flow-models/flow-models/data/agh_2015/mixtures/tcp/size"
 num=10000000
 flow-models-generate -x size -s $num ${model_loc} > flows_w_bytes_raw.txt
-cat flows_w_bytes_raw.txt | awk '{print $20}' | tr -d , > /Users/ufukusubutun/Documents/data_gen/flows_w_bytes.txt
+cat flows_w_bytes_raw.txt | awk '{print $20}' | tr -d , > ${current_loc}/flows_w_bytes.txt
 
 N_NODES=12
 N_FLOWS_P_NODE=800 #200
