@@ -38,6 +38,7 @@ int2node_gen ()
 
 for host in "${sources[@]}"
 do
+	echo PING TEST from ${host} to sink:
 	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile ping sink -c 1
 
 	ssh -oStrictHostKeyChecking=no ${uname}@${host} -i $keyfile echo "connecting to ${host}"
@@ -100,6 +101,7 @@ do
 done
 
 ## TURN SEGMENTATION OFFLOADING OFF
+echo TURN SEGMENTATION OFFLOADING OFF
 # Get a list of all experiment interfaces, excluding loopback
 ifs=$(netstat -i | tail -n+3 | grep -Ev "lo" | cut -d' ' -f1 | tr '\n' ' ')
 
@@ -111,6 +113,8 @@ for i in $ifs; do
   sudo ethtool -K $i tso off
   sudo ethtool -K $i ufo off
 done
+echo Ignore fragmentation-offload warnings above
+
 
 if [ "$update" == "u" ];
 then
@@ -131,6 +135,7 @@ IS_EXP_SINK=1
 IS_O_SINK=0
 
 # exp sink
+echo PING TEST from sink to emulator:
 ssh -oStrictHostKeyChecking=no ${uname}@$exp_sink -i $keyfile ping emulator -c 1
 scp  -i $keyfile init_server.sh ${uname}@$exp_sink:/users/${uname}
 ssh -oStrictHostKeyChecking=no ${uname}@$exp_sink -i $keyfile sudo chmod a+x /users/${uname}/init_server.sh
@@ -144,6 +149,7 @@ then
 fi
 
 # other sink
+echo PING TEST from sink2 to emulator:
 ssh -oStrictHostKeyChecking=no ${uname}@$o_sink -i $keyfile ping emulator -c 1
 scp  -i $keyfile init_server.sh ${uname}@$o_sink:/users/${uname}
 ssh -oStrictHostKeyChecking=no ${uname}@$o_sink -i $keyfile sudo chmod a+x /users/${uname}/init_server.sh

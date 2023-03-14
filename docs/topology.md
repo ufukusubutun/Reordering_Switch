@@ -15,9 +15,9 @@ https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381
 The topology comes built in with a temporary 120 GB storage (that is wiped at the completion of the reservation.) This storage is built under `/mydata`.
 
 
-### Instantitating:
+### Instantiating:
 
-In order to instantiate the topology, navigate to the [cloudlab profile](https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc) and click on 'Instantiate'. You will need a Cloudlab account.
+In order to instantiate the topology, navigate to the [Cloudlab profile](https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc) and click on 'Instantiate'. You will need a Cloudlab account.
 
 This will bring about a page with customazible parameters including what hardware to use for specific node on the topology, link capacities to request and a possibility to attach a permenant Cloudlab Storage space (called 'dataset'). The defeault parameters would provide the environment we used on the paper. However, to be able to effectively work with multiple experiments and store results, you may want to create a dataset through your Cloudlab account, see [Advanved](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#advanced).
 
@@ -39,13 +39,13 @@ Clone this repository into your work directory with the following command:
 
 	git clone https://github.com/ufukusubutun/Reordering_Switch.git
 
-Once you cloned the repository, we will need take one more step before we can run the experiments. We will need to have TCP flow size traces to work with. Click here to switch to the detailed explanations.
+Once you cloned the repository, we will need to take one more step before we can run the experiments. We will need to have TCP flow size traces to work with. Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation) to display detailed instructions.
 
 ### Advanced 
 
 The topology also allows you to attach a permanent storage (termed long term dataset in Cloudlab jargon.) To have access to a long term dataset create your own dataset under Storage > Create Dataset and enter the URN address when instantiating the topolgy using the provided profile. This storage will be built in under `/mypermdata`.
 
-You might also want to work with different hardware. See [the cloudlab documentation on hardware](http://docs.cloudlab.us/hardware.html) to pick different servers.
+You might also want to work with different hardware. See [the Cloudlab documentation on hardware](http://docs.cloudlab.us/hardware.html) to pick different servers.
 
 
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#experiment-profile) to go back to the main readme page.
