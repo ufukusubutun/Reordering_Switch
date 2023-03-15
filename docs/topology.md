@@ -12,7 +12,7 @@ The experiments were realized at the [Cloudlab Testbed](https://www.cloudlab.us/
 You can use the following Cloudlab profile to instantiate the 24 node topology used for the experiments with a couple of clicks.
 https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc
 
-The topology comes built in with a temporary 120 GB storage (that is wiped at the completion of the reservation.) This storage is built under `/mydata`.
+The topology comes built in with a temporary 120 GB storage at the emulator node (that is wiped at the completion of the reservation.) This storage is built under `/mydata`.
 
 
 ### Instantiating:
@@ -27,15 +27,17 @@ Once we request the resources, it might be the case that resources are not immed
 
 ### Logging In and Setting Up
 
-Once the experiment reaches a ready status, ssh into the emulator node following the link provided by Cloudlab on the list view. You will need an ssh key file both to be able to ssh into the emulator node from your own system and also to be able to communicate with all the nodes during experiments.
+Once the experiment reaches a ready status, ssh into the emulator node following the link provided by Cloudlab on the list view. You will need an ssh key file both to be able to ssh into the **emulator** node from your own system and also to be able to communicate with all the nodes during experiments.
 
-Transfer your ssh key file into your your work directory. This file will be needed. This can be done by running the following `scp` command in your local computer.
+**emulator** node will act as the command control for all the experiments. We will start/end experiments by running scripts at the emulator node and this will also be the place where we will capture packet headers and store results at the mounted drives.
+
+Transfer your ssh key file into `~/.ssh/` of the emulator node. This file will be needed. This can be done by running the following `scp` command **in your local computer** by replacing the <> with the provided items.
 
 	scp -i <location/of/your/keyfile> <location/of/your/keyfile> <your-username>@<your-emulators-hw>.utah.cloudlab.us:/users/<your-username>/.ssh/
 
 ### Cloning the Repository
 
-Clone this repository into your work directory with the following command:
+Clone this repository into `~/` of the **emulator** node with the following command:
 
 	git clone https://github.com/ufukusubutun/Reordering_Switch.git
 
@@ -43,7 +45,7 @@ Once you cloned the repository, we will need to take one more step before we can
 
 ### Advanced 
 
-The topology also allows you to attach a permanent storage (termed long term dataset in Cloudlab jargon.) To have access to a long term dataset create your own dataset under Storage > Create Dataset and enter the URN address when instantiating the topolgy using the provided profile. This storage will be built in under `/mypermdata`.
+The topology also allows you to attach a permanent storage (termed long term dataset in Cloudlab jargon.) To have access to a long term dataset create your own dataset under Storage > Create Dataset and enter the URN address when instantiating the topolgy using the provided profile. This storage will be built in under `/mypermdata` of the **emulator** node.
 
 You might also want to work with different hardware. See [the Cloudlab documentation on hardware](http://docs.cloudlab.us/hardware.html) to pick different servers.
 
