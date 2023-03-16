@@ -39,20 +39,20 @@ We will be using a single script named `auto_branched_v2.bash` to:
 * Set the desired TCP Recovery algorithm at each of the traffic generating nodes
 * Simultaneously start and manage flow generators at the traffic generating nodes
 
-This script will achieve those by calling other scripts (namely `node_init.sh`, `flow_gen.sh`, `server_init.sh` etc.) at the corresponding nodes. The set up through the `set_up.sh` must be completed for this step to work.
+This script will achieve those by calling other scripts (namely `node_init.sh`, `flow_gen.sh`, `server_init.sh` etc.) at the corresponding nodes. The set up through the `set_up.sh` must be completed as above for this step to work.
 
 This script will also be the place where we will set a lot of parameters with respect to the experiment we would like to run. Open the script `auto_branched_v2.bash` with your favorite text editor and review all the fields marked with **TODO**. As we did in the `set_up.sh` script, do not forget to also enter your Cloudlab username and ssh key location.
 
 The parameters that are immediately in your control are:
-* Experiment duration - how long the flow generators will keep on running
-* Number of flow generators - how many flow generators to set up at each node (value x in the paper.)
-* Buffer size scaling - how large the buffers at each node should be (2 * BDP of that link or equivalent for LB by default.)
-* Switch configuration - LB or non-LB config, i.e., w/ or w/o reordering
-* Recovery algorithm to use - RACK, adapThresh (dupthresh with adaptive threshold) or 3Thresh (dupthresh with fixed threshold of 3)
-* Fixed base delay - Fixed amount of delay to be applied in the reverse direction. (value T in the paper.)
-* Switch size - corresponds to value N in the paper
-* Line rate - corresponds to value C in the paper
-* Portion of flows to be headed to sink1 or sink2 - this is fixed to 50% in the paper
+* *Experiment duration* - how long the flow generators will keep on running
+* *Number of flow generators* - how many flow generators to set up at each node (value x in the paper.)
+* *Buffer size scaling* - how large the buffers at each node should be (2 * BDP of that link or equivalent for LB by default.)
+* *Switch configuration* - LB or non-LB config, i.e., w/ or w/o reordering
+* *Recovery algorithm to use* - RACK, adapThresh (dupthresh with adaptive threshold) or 3Thresh (dupthresh with fixed threshold of 3)
+* *Fixed base delay* - Fixed amount of delay to be applied in the reverse direction. (value T in the paper.)
+* *Switch size* - corresponds to value N in the paper
+* *Line rate* - corresponds to value C in the paper
+* *Portion of flows to be sent to sink1 or sink2* - this is fixed to 50% in the paper
 
 ### Starting the flows and setting up the switch configuration
 
