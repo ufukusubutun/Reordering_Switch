@@ -27,14 +27,16 @@ Please follow the detailed information and instructions on initializing the topo
 
 ## Trace Generation
 
-TCP flows were generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. Their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), was used to generate the traces.
+TCP flows are generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. Their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), was used to generate the traces.
 
 Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md).
 
 
 ## Running The Experiment
 
-Please follow the detailed instructions on running the experiment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md).
+The experiments are conducted and managed centrally from the emulator node using a number of scripts. To set up desired parameters, start the flows and capture packet headers you will need the instructions in this section.
+
+Please follow the detailed instructions on running the experiment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md#running-the-experiment).
 
 
 ## Post-Processing
@@ -44,4 +46,8 @@ Please follow the detailed instructions on running the experiment [here](https:/
 Detailed instructions on post-processing and generating plots can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/post_p.md).
 
 Made at [this jupyter notebook](https://colab.research.google.com/drive/1e-DUvf5FcGuIN_EmctMthfrdv4Dsvb41?usp=sharing)
+
+## General description of all scripts in this repo
+
+
 

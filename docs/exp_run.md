@@ -135,6 +135,8 @@ As the random wait times from the start of one flow to the next at the flow gene
 Increasing the number of flow generators beyond 250-300 might lead to performance issues at the flow generating nodes. Modifying the flow sizes might be an alternative way to further increase the utilization if needed.
 In general, every parameter interracts with a high number of moving parts, caution and verification is needed when changing parameters.
 
+### Advanced: Suggestions with respect to tuning of flow generators in `flow_gen.sh`
 
+TODO - explain how to interpret the logs and make sure random wait times are good enough
 
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-experiment) to go back to the main readme page.

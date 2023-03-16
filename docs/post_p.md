@@ -6,6 +6,11 @@ WORK IN PROGRESS
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/plot.png"  width="35%" >
 
+At this stage, it is assumed that, you have already conducted experiments, collected packet captures, properly renamed and converted them to .csv files. If you haven't done so, please [go back](https://github.com/ufukusubutun/Reordering_Switch#post-processing) and complete those steps.
+
+
+### Setting up the jupyter notebook environment on Cloudlab
+
 
 On the host where your data is/that you want to connect to:
 
