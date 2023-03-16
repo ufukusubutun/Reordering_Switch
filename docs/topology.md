@@ -37,9 +37,10 @@ Transfer your ssh key file into `~/.ssh/` of the emulator node. This file will b
 
 ### Cloning the Repository
 
-Clone this repository into `~/` of the **emulator** node with the following command:
+Clone this repository into `~/` of the **emulator** node with the following command and `cd` into it:
 
 	git clone https://github.com/ufukusubutun/Reordering_Switch.git
+	cd Reordering_Switch
 
 Once you cloned the repository, we will need to take one more step before we can run the experiments. We will need to have TCP flow size traces to work with. Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation) to display detailed instructions.
 

@@ -21,11 +21,6 @@ exp_time_safe=75
 # ----------------------------------------------------------- #
 
 
-
-filename="exp_$(date +"%Y_%m_%d_%H_%M").txt"
-touch $filename
-echo 'alg_ind, RTT, lam, N, cap, trial, avg_meas_rtt, avg_min_rtt, avg_cwnd, socket_snd, avg_reo_wnd, avg_reo_wnd_steps, avg_reo_wnd_persists' >> $filename
-
 sudo echo sudooo
 
 int2exp_sink="\$(ip route get 10.14.1.2 | grep -oP \"(?<= dev )[^ ]+\")"
@@ -101,13 +96,14 @@ buffer_scaler=250 ## value 250 corresponds to 2*BDP buffers, likewise 125 -> BDP
 # ----------------------------------------------------------- #
 # TODO SET THE CONFIGURATION TO USE, FOLLOW THE IF-ELSE STATEMENT TO SEE WHICH ONE IS USED
 # the first one is used in an if-else fashion
+# eg: if fair_q elif prob else debug mode
 fair_q=1 # uses fq with htb - corresponds to the non-LB configuration on the article
 prob=1 # uses htb with iptables tagging - corresponds to the LB configuration on the article
 # when both are set to 0, a third configuration of dubugging is used,
 # This config hashes flows generated at the 3 tor switches to 3 queues
 # ----------------------------------------------------------- #
 
-# ALTTHOUGH EXPERIMENTS CAN BE RUN USING THE FOR LOOP BELOW, I SUGGEST RUNNING ONE EXPERIMENT AT ONCE
+# ALTTHOUGH EXPERIMENTS CAN BE RUN USING THE FOR LOOP BELOW, I SUGGEST RUNNING ONE EXPERIMENT AT A TIME
 # AS THERE ARE A LOT OF THINGS GOING ON - SUGGESTED USE: UPDATE THE VALUE GIVEN TO THE LOOP TO PICK PARAMETERS
 # ----------------------------------------------------------- #
 # TODO SET THE ALGORITHM
@@ -517,8 +513,6 @@ do
 								break ;
 							fi
 						done
-
-						echo "$alg_ind, $RTT, $lam, $N, ${switch_cap[$cap_ind]}, $trial, $avg_meas_rtt, $avg_min_rtt, $avg_cwnd, $socket_snd, $avg_reo_wnd, $avg_reo_wnd_steps, $avg_reo_wnd_persists" >> $filename
 						
 
 					done # trials loop ends
