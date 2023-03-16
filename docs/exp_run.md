@@ -64,13 +64,30 @@ This will first, set the recovery algorithm at the traffic generating nodes, dis
 
 Hitting any key to continue, will start setting up link capacities and buffer sizes in each node on the network. The following diagram with node names and link capacities might be helpful in getting a graps of the system.
 
-<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/caps-topo.png"  width="35%" >
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/caps-topo.png"  width="45%" >
+
+This might take a while. Make sure there are no ssh related errors, meaning the script cannot communicate with a given server. When this will be done, you will once again be prompted to start the experiment by hitting any key. 
+
+Starting the experiment means, first the `iperf` servers will be set up at the sink nodes and then the flow generators would be started at the traffic generating nodes.
+
+runs for exp time
+you will first be notified that flowgens are being set up. and then when all flow generators are running at each node
+you will also get a notification when the flow generators that were the first to be started at a given node terminated
+transfers and merges flowgen logs
+
+does not capture packets on its own - ideally the capture should be manualy collected during the time in which all flow generators are running
+killing the script during the experiment may not be able to terminate flow generator scripts
+
+
 
 ### Capturing packet headers
 
 Open 5 new terminal windows into the emulator node and change to a directory with large disk space in each. E.g.,
 
 	cd /mydata/
+
+In order to capture packets at all ingress/egress nodes we will need to manually start and stop tcpdump captures. This is to be done when all generators are running. The post processing script will be capable of synchronizing captures and discarding incomplete parts at the start and the end. Run all 5 of these commands at 5 terminal windows at the emulator node when all flow generators are running and stop them with `Ctrl+C` when the first flow generators complete. 
+
 Egress capture for output 1:
 
 	sudo tcpdump -B 4096 -n -i $(ip route get 10.14.1.2 | grep -oP "(?<= dev )[^ ]+") -s 64 -w egress_cap1.pcap tcp dst portrange 50000-59600
@@ -87,9 +104,30 @@ Ingress capture for input 3:
 
 	sudo tcpdump -B 4096 -n -i $(ip route get 10.10.9.1 | grep -oP "(?<= dev )[^ ]+") -s 64 -w ingress_cap3.pcap tcp dst portrange 50000-59600
 
+### Meaningfully renaming the experiment data
+
+The script called `rename.sh` is prepared to systematically store and save experiment results. **Edit the script before running** following the example formatting provided to reflect the experiment parameters used to generate the capture (e.g., line rate, algorithm, base delay etc.). This script will rename the genericly named experiment result files to a systematic format that we will later use to ease post-processing.
+
+	bash rename.sh
+
+Based on the available disk space and how many other parameters you would like to test, you may want to let the results rest while you are making experiments with different paramaters and renaming the `.pcap` and `.log` files the same way.
+
+### Producing `.csv` files out of the `.pcap` packet captures
+
+The script called `run_v4.sh` is prepared to systematically convert `.pcap` files into `.csv`s that are useful for post-processing. The script contains loops of parameters to consider. Based on the experiments you conducted, **edit the script before running** following the example formatting provided. 
+
+	bash run_v4.sh
+
+This script is expected to run on the order of minutes and will not print anything, so in order to see how many processes are still running you can run the following command at the different terminal window.
+
+	ps aux | grep tshark
+
+Tip: running `run_v4.sh` for too many experiments at the same time might result in excessive RAM usage and might crash some of the processes. Make sure no process is terminated due to RAM shortage. In case that happens, expect to see some errors on the terminal where the script is running.
+
 ### Saving and storing experiment data
 
-`rename.sh`
+For the rest of the process, only `.csv` and `.log` files will be necessary. The most efficient way of storing experiment data is to zip those files into an archive. However, `.pcap` files could potentially be useful for dbugging purposes. I would suggest setting up permanent storage (or a dataset) in Cloudlab as decribed in the [topology set up section](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#advanced) as transfering the rekatively large experiment data and storing them locally is burdensome. As we also handle the post-processing on Cloudlab it is the most convenient to keep everything there.
+
 
 ### Advanced: Suggestions with respect to choice of parameters in `auto_branched_v2.bash`
 

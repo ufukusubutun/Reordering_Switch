@@ -13,11 +13,15 @@ do
             # Loop through N 8 100
             for N in 8 100
             do
-                # Loop through algs 1, 2, 3
-                for alg in 1 2 3
+                # Loop through base delay 10 20
+                for RTT in 10 # 20
                 do
-                    # Add each combination of xxxx and the number to the array
-                    exp_save_names+=(exp1-alg${alg}-RTT10-N${N}-lam${lam}-numgen${numgen}-cap${cap})
+                    # Loop through algs 1, 2, 3
+                    for alg in 1 2 3
+                    do
+                        # Add each combination of xxxx and the number to the array
+                        exp_save_names+=(exp1-alg${alg}-RTT${RTT}-N${N}-lam${lam}-numgen${numgen}-cap${cap})
+                    done
                 done
             done
         done
@@ -48,4 +52,5 @@ done
 wait
 
 # Zip all of the output files into a single archive
-zip output_files.zip *.csv
+# uncomment below if wanted
+#zip output_files.zip *.csv

@@ -265,7 +265,7 @@ do
 					sudo tc qdisc add dev $(eval echo $int2o_sink) parent 1:19 handle 190: pfifo limit $(expr $(expr $(expr $(expr ${network_capacity} \* $buffer_scaler ) \* $RTT_us ) / 1000 ) / 1500) 
 
 
-					echo "Press any key to move to next experiment (1)"
+					echo "Press verify the parameters and the queuing set up above. If correct, press any key to continue setting up all other nodes."
 					while [ true ] ; do
 						read -t 3 -n 1
 						if [ $? = 0 ] ; then
@@ -425,7 +425,7 @@ do
 					ssh -oStrictHostKeyChecking=no ${uname}@${o_sink} -i $keyfile "sudo tc qdisc add dev $int2node root netem delay ${RTT_par_us}us"
 
 
-					echo "Press any key to start the experiment"
+					echo "Done setting up. Make sure the log above contains no errors. Press any key to start the experiment"
                                         while [ true ] ; do
                                                 read -t 3 -n 1
                                                 if [ $? = 0 ] ; then
@@ -490,16 +490,6 @@ do
 						    cat "${location}/flowgen_logs/n${i}_flowgen.log" >> /mydata/combined_flowgen.log
 						done
 
-
-
-
-						echo "Press any key to move to start the iperf log transfer"
-						while [ true ] ; do
-							read -t 3 -n 1
-							if [ $? = 0 ] ; then
-								break ;
-							fi
-						done
 
 						# THE 'dev' branch has iperf capture and transfer code that is located here
 						# as they were not used in the final work, they are removed from the main branch
