@@ -2,7 +2,7 @@ Click [here](https://github.com/ufukusubutun/Reordering_Switch#trace-generation)
 
 WORK IN PROGRESS
 
-## Trace-Generation
+# Trace Generation to be Used in Experiments
 
 At this stage, it is assumed that, you have a Cloudlab experiment reserved and running and cloned the repository into the work directory. If you haven't done so, please [go back](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) and complete those steps. 
 
@@ -12,7 +12,7 @@ Here you have two options, you can either generate new fresh TCP flow size trace
 
 Make sure you have an ssh connection with the **emulator** node and follow the instructions below at the emulator node.
 
-### a) Download Sample Trace
+## a) Download Sample Trace
 	
 Download the sample trace that supports up to x=200 flow generators from Google Drive using the following command:
 
@@ -21,7 +21,7 @@ Download the sample trace that supports up to x=200 flow generators from Google 
 
 If this fails (as Google plays around with things,) you can still download it from [here](https://drive.google.com/file/d/1NSQV1XJgDNFN38HdLjlIFdYNxwUpIIPD/view) to your own computer and then transfer it to the emulator node with scp.
 
-### b) Generate New Trace
+## b) Generate New Trace
 
 In order to be able to generate the traces we will use the `flow-models` package and their model `agh_2015`. 
 

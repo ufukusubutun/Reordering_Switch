@@ -16,7 +16,7 @@ To reproduce the results you can follow the steps below. In general terms, the p
 * Post-process results to obtain measurements and produce plots.
 
 
-## Experiment Profile
+## Initializing the Topology and Setting up the Experiment Environment
 
 We will conduct the experiments at the [Cloudlab Testbed](https://www.cloudlab.us/) using a 24 node topology making use of bare metal servers. The topology profile can be found [here](https://www.cloudlab.us/show-profile.php?uuid=999fe067-bf91-11ed-b28b-e4434b2381fc).
 
@@ -25,7 +25,7 @@ We will conduct the experiments at the [Cloudlab Testbed](https://www.cloudlab.u
 Please follow the detailed information and instructions on initializing the topology on Cloudlab and setting up the experiment environment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#experiment-profile).
 
 
-## Trace Generation
+## Trace Generation to be Used in Experiments
 
 TCP flows will be generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. We will use their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), to generate the traces.
 
@@ -51,7 +51,7 @@ Made at [this jupyter notebook](https://colab.research.google.com/drive/1e-DUvf5
 
 `auto_branched_v2.bash` - The main experiment script that sets up the desired switch configuration at the emulator node, that sets up link capacities, buffer sizes, fixed delays at each of the nodes/links, that sets the desired TCP Recovery algorithm at each of the traffic generating nodes and that simultaneously starts and manages flow generators at the traffic generating nodes
 
-`flow_gen.sh` - An instance of a flow generator to be run in bulk at each traffic generator nodes in parallel. Picks TCP flow sizes from the trace and runs those flows. There is a random wait time between the start of one flow to the start of the oher. It should be made sure that, the random wait time is greater than the flow completion time. This can be done thru checking the flow_gen.log produced at the end of an experiment run.
+`flow_gen.sh` - An instance of a flow generator to be run in bulk at each traffic generator nodes in parallel. Picks TCP flow sizes from the trace and runs those flows. There is a random wait time between the start of one flow to the start of the oher.
 
 `init_server.sh` - Run locally at the sinks by the auto_branched_v2.bash script, initiallizes and controls iperf3 servers (sinks).
 

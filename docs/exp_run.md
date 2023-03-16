@@ -144,6 +144,7 @@ In general, every parameter interracts with a high number of moving parts, cauti
 ### Advanced: Suggestions with respect to tuning of flow generators in `flow_gen.sh`
 
 TODO - explain how to interpret the logs and make sure random wait times are good enough
+It should be made sure that, the random wait time is greater than the flow completion time. This can be done thru checking the flow_gen.log produced at the end of an experiment run.
 
 ### Advanced: Debugging tools located under the `misc` folder
 
