@@ -29,7 +29,7 @@ Please follow the detailed information and instructions on initializing the topo
 
 TCP flows are generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. Their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), was used to generate the traces.
 
-Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md).
+Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation).
 
 
 ## Running The Experiment
@@ -49,5 +49,11 @@ Made at [this jupyter notebook](https://colab.research.google.com/drive/1e-DUvf5
 
 ## General description of all scripts in this repo
 
-
+`auto_branched_v2.bash` - 
+`flow_gen.sh` - 
+`init_server.sh` - 
+`node_init.sh` - 
+`rename.sh` - 
+`run_v4.sh` - 
+`set_up.sh` - 
 
