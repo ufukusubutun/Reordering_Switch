@@ -2,7 +2,7 @@ Click [here](https://github.com/ufukusubutun/Reordering_Switch#experiment-profil
 
 WORK IN PROGRESS
 
-## Experiment Profile
+## Initializing the Topology and Setting up the Experiment Environment
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="25%" >
 
