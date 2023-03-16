@@ -1,4 +1,7 @@
-# Do Switches Still Have to Deliver Packets in Sequence?
+# Do Switches Still Need to Deliver Packets in Sequence?
+
+Ufuk Usubütün, Fraida Fund, Shivendra Panwar
+NYU Networks Research Group
 
 WORK IN PROGRESS - being updated for reviewers of IEEE HPSR 2023
 
@@ -22,15 +25,14 @@ We will conduct the experiments at the [Cloudlab Testbed](https://www.cloudlab.u
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
-Please follow the detailed information and instructions on initializing the topology on Cloudlab and setting up the experiment environment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#experiment-profile).
+Please follow the detailed information and instructions on initializing the topology on Cloudlab and setting up the experiment environment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#initializing-the-topology-and-setting-up-the-experiment-environment).
 
 
 ## Trace Generation to be Used in Experiments
 
 TCP flows will be generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. We will use their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), to generate the traces.
 
-Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation).
-
+Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments)
 
 ## Running The Experiment
 

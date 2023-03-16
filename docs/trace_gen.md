@@ -1,4 +1,4 @@
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments) to go back to the main readme page.
 
 WORK IN PROGRESS
 
@@ -50,4 +50,4 @@ We will finally need the traces we generated to be present on our working direct
 Once you are done with either method (a) or (b) of generating the traces, we should be ready to start running some flows after setting up our environment. To proceed click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md#running-the-experiment).
 
 
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments) to go back to the main readme page.

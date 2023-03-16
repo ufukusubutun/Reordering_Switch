@@ -1,4 +1,4 @@
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#experiment-profile) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch#initializing-the-topology-and-setting-up-the-experiment-environment) to go back to the main readme page.
 
 WORK IN PROGRESS
 
@@ -42,7 +42,7 @@ Clone this repository into `~/` of the **emulator** node with the following comm
 	git clone https://github.com/ufukusubutun/Reordering_Switch.git
 	cd Reordering_Switch
 
-Once you cloned the repository, we will need to take one more step before we can run the experiments. We will need to have TCP flow size traces to work with. Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation) to display detailed instructions.
+Once you cloned the repository, we will need to take one more step before we can run the experiments. We will need to have TCP flow size traces to work with. Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments) to display detailed instructions.
 
 ### Advanced 
 
@@ -51,5 +51,5 @@ The topology also allows you to attach a permanent storage (termed long term dat
 You might also want to work with different hardware. See [the Cloudlab documentation on hardware](http://docs.cloudlab.us/hardware.html) to pick different servers.
 
 
-Click [here](https://github.com/ufukusubutun/Reordering_Switch#experiment-profile) to go back to the main readme page.
+Click [here](https://github.com/ufukusubutun/Reordering_Switch#initializing-the-topology-and-setting-up-the-experiment-environment) to go back to the main readme page.
 
