@@ -25,7 +25,7 @@ Open `set_up.sh` with your favorite text editor (vim, nano) and complete the two
 
 	bash set_up.sh
 
-Make sure you get no errors except for `Error: Cannot delete qdisc with handle of zero.` If you get errors with respect to ssh key, make sure you have your ssh key placed under `~/.ssh/` and updated the name of the file at the beginning of the set_up.bash properly. If you get an error with scp that involves `data_gen.zip` that means there is a problem with the trace files. They are either not generated or it is not placed in the directory you are working. 
+Make sure you get no errors except for `Error: Cannot delete qdisc with handle of zero.` That is fine. If you get errors with respect to ssh key, make sure you have your ssh key placed under `~/.ssh/` and updated the name of the file at the beginning of the set_up.bash properly. If you get an error with scp that involves `data_gen.zip` that means there is a problem with the trace files. They are either not generated or it is not placed in the directory you are working. 
 
 When you are done with the step above. Run the same command with the argument `u`. This will also run `apt-get update` and `apt-get install` commands at each node. The ssh output might be a little messy.
 
@@ -56,8 +56,15 @@ The parameters that are immediately in your control are:
 
 ### Starting the flows and setting up the switch configuration
 
-Once the parameters above are set
+Once the parameters above are set you are now clear to run the script:
 
+	bash auto_branched_v2.bash
+
+This will first, set the recovery algorithm at the traffic generating nodes, display the current set of paramters and set up the switch emulation. Review the output and make sure the parameters are displayed correctly.
+
+Hitting any key to continue, will start setting up link capacities and buffer sizes in each node on the network. The following diagram with node names and link capacities might be helpful in getting a graps of the system.
+
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/caps-topo.png"  width="35%" >
 
 ### Capturing packet headers
 
