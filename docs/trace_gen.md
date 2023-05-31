@@ -1,7 +1,5 @@
 Click [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments) to go back to the main readme page.
 
-WORK IN PROGRESS
-
 # Trace Generation to be Used in Experiments
 
 At this stage, it is assumed that, you have a Cloudlab experiment reserved and running and cloned the repository into the work directory. If you haven't done so, please [go back](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) and complete those steps. 

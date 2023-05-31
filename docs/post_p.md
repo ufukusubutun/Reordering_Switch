@@ -1,7 +1,5 @@
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#post-processing) to go back to the main readme page.
 
-WORK IN PROGRESS
-
 # Post-Processing
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/plot.png"  width="35%" >

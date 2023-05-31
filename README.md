@@ -4,9 +4,7 @@ Ufuk Usubütün, Fraida Fund, Shivendra Panwar
 
 NYU Networks Research Group
 
-WORK IN PROGRESS - being updated for reviewers of IEEE HPSR 2023
-
-This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' submitted to IEEE HPSR 2023. To better undertand the motivation and takeaways, please don't forget to check our paper.
+This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' published at IEEE HPSR 2023. To better undertand the motivation and takeaways, please don't forget to check our paper.
 
 We aim to evaluate the resilience of contemporary TCP loss detection (formally called 'recovery') algorithms under patterns of reordering that would be caused by a load-balanced switch located at the network core. The internet core typically has high line rates and large number of flows getting mixed. And our evaluation of load-balanced switches is inspired by the [Load-Balanced Birkhoff-von Neumann Switch design of C.S. Chang](https://web.stanford.edu/class/ee384y/Handouts/BVN-Switches-Chang.pdf)
 

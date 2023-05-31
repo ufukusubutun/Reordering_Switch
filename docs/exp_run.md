@@ -1,7 +1,5 @@
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-experiment) to go back to the main readme page.
 
-WORK IN PROGRESS
-
 # Running The Experiment
 
 

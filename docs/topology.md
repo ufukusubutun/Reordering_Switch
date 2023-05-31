@@ -1,7 +1,5 @@
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#initializing-the-topology-and-setting-up-the-experiment-environment) to go back to the main readme page.
 
-WORK IN PROGRESS
-
 ## Initializing the Topology and Setting up the Experiment Environment
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="25%" >
