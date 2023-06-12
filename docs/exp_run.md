@@ -43,7 +43,7 @@ This script will also be the place where we will set a lot of parameters with re
 
 The parameters that are immediately in your control are:
 * *Experiment duration* - how long the flow generators will keep on running
-* *Number of flow generators* - how many flow generators to set up at each node (value x in the paper.)
+* *Number of flow generators* - how many flow generators to set up at each node (value F in the paper.)
 * *Buffer size scaling* - how large the buffers at each node should be (2 * BDP of that link or equivalent for LB by default.)
 * *Switch configuration* - LB or non-LB config, i.e., w/ or w/o reordering
 * *Recovery algorithm to use* - RACK, adapThresh (dupthresh with adaptive threshold) or 3Thresh (dupthresh with fixed threshold of 3)

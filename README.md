@@ -4,11 +4,11 @@ Ufuk Usubütün, Fraida Fund, Shivendra Panwar
 
 NYU Networks Research Group
 
-This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' published at IEEE HPSR 2023. To better undertand the motivation and takeaways, please don't forget to check our paper.
+This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' which appeared at IEEE HPSR 2023. Our work was awarded the BEST PAPER AWARD! To better undertand the motivation and takeaways, please don't forget to check our paper.
 
-We aim to evaluate the resilience of contemporary TCP loss detection (formally called 'recovery') algorithms under patterns of reordering that would be caused by a load-balanced switch located at the network core. The internet core typically has high line rates and large number of flows getting mixed. And our evaluation of load-balanced switches is inspired by the [Load-Balanced Birkhoff-von Neumann Switch design of C.S. Chang](https://web.stanford.edu/class/ee384y/Handouts/BVN-Switches-Chang.pdf)
+We aim to evaluate the resilience of contemporary TCP loss detection (formally called 'recovery') algorithms under patterns of reordering that would be caused by a load-balanced switch located at the network core. The internet core typically has high line rates and large number of flows getting mixed. And the load-balanced switch we use to cunduct the evalutaion was inspired by the Load-Balanced Birkhoff-von Neumann Switch [design of C.S. Chang](https://web.stanford.edu/class/ee384y/Handouts/BVN-Switches-Chang.pdf)
 
-The experiments involve, generating thousands of flows at nodes located at the branches of a tree. This traffic is mixed and sent through an emulator node where we implement the effect of the desired switch architecture on software. And the traffic terminates at sinks. While the traffic crosses the switch, we collect packet header captures at ingress and egress nodes of the 'emulator' node and post-process those to conduct measurements.
+The experiments involve, generating thousands of flows at nodes located at the branches of a tree. This traffic is mixed and sent through an emulator node where we implement the effect of the desired switch architecture on software. And the traffic terminates at sinks. While the traffic traverses the switch, we collect packet header captures at the ingress and egress nodes of the 'emulator' node and post-process those to conduct measurements.
 
 To reproduce the results you can follow the steps below. In general terms, the procedure involves doing the following:
 
@@ -24,27 +24,27 @@ We will conduct the experiments at the [Cloudlab Testbed](https://www.cloudlab.u
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topo.png"  width="40%" >
 
-Please follow the detailed information and instructions on initializing the topology on Cloudlab and setting up the experiment environment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#initializing-the-topology-and-setting-up-the-experiment-environment).
+**Please follow the detailed information and instructions on initializing the topology on Cloudlab and setting up the experiment environment [here [TODO #1]](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/topology.md#initializing-the-topology-and-setting-up-the-experiment-environment).**
 
 
 ## Trace Generation to be Used in Experiments
 
 TCP flows will be generated with random flow sizes sampled from [this](https://arxiv.org/abs/1809.03486) study. We will use their model, as implemented in [this repo](https://github.com/piotrjurkiewicz/flow-models), to generate the traces.
 
-Please follow the detailed instructions on trace generation [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments)
+**Please follow the detailed instructions on trace generation [here [TODO #2]](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments)**
 
 ## Running The Experiment
 
 The experiments will be conducted and managed centrally from the emulator node using a number of scripts. To set up desired parameters, start the flows and capture packet headers you will need the instructions in this section.
 
-Please follow the detailed instructions on running the experiment [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md#running-the-experiment).
+**Please follow the detailed instructions on running the experiment [here [TODO #3]](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/exp_run.md#running-the-experiment).**
 
 
 ## Post-Processing
 
 <img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/plot.png"  width="35%" >
 
-Once we collected the raw packet header captures, we will need to post-process these captures to conduct flow and packet level measurements. Detailed instructions on post-processing and generating plots can be found [here](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/post_p.md#post-processing).
+Once we collected the raw packet header captures, we will need to post-process these captures to conduct flow and packet level measurements. **Detailed instructions on post-processing and generating plots can be found [here [TODO #4]](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/post_p.md#post-processing).**
 
 ## General description of all scripts in this repo
 
