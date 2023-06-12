@@ -150,10 +150,11 @@ As also explained in detail in the paper, the flow generators function the follo
 
 This procedure is also summarized in the figure below:
 
-<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/flow_gen_diag.png"  width="40%" >
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/flow_gen_diag.png"  width="55%" >
 
-By picking a value for `numgen` or what is referred to as **F** in the paper, you specify the number of such flow generators that are running in parallel, **at each node**.
+By picking a value for `N_FLOWS_P_NODE` in the `auto_branched_v2.bash` or what is referred to as **F** in the paper, you specify the number of such flow generators that are running in parallel, **at each node**.
 
+the traces you are using needs to have at least as many parallel logs as requested by `N_FLOWS_P_NODE`. To generate traces with more parallel .... refer to [the documentation on flow trace generation](https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/trace_gen.md#trace-generation-to-be-used-in-experiments) and follow the instructions for option (b) with the desired number for parameter `numgen`.
 
 tune min flow size in the flow_gen script, make sure to run set_up.sh after making any changes so that the script is up to date at each node! (Otherwise you would be running older versions of the code as the local copies at each node will be called!)
 
