@@ -3,7 +3,7 @@ Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-exper
 # Running The Experiment
 
 
-At this stage, it is assumed that, you have a Cloudlab experiments reserved and running, cloned the repository into the work directory and have the TCP flow size traces (`data_gen.zip`) ready in your work directory of `~/Reordering_Switch`. If you haven't done so, please [go back](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) and complete those steps.
+At this stage, it is assumed that, you have a Cloudlab experiment reserved and running, cloned the repository into the work directory and have the TCP flow size traces (`data_gen.zip`) ready in your work directory of `~/Reordering_Switch`. If you haven't done so, please [go back](https://github.com/ufukusubutun/Reordering_Switch#trace-generation) and complete those steps.
 
 
 ## Setting up the workspace
@@ -141,12 +141,38 @@ In general, every parameter interracts with a high number of moving parts, cauti
 
 ### Advanced: Suggestions with respect to tuning of flow generators in `flow_gen.sh`
 
+As also explained in detail in the paper, the flow generators function the following way:
+
+* Pick a random wait time to wait (which must be larger than the flow completion time)
+* Sample a TCP flow size
+* Start `iperf3` with the flow size from the sample
+* Repeat the procedure when the random wait time is over.
+
+This procedure is also summarized in the figure below:
+
+<img src="https://github.com/ufukusubutun/Reordering_Switch/blob/main/docs/flow_gen_diag.png"  width="40%" >
+
+By picking a value for `numgen` or what is referred to as **F** in the paper, you specify the number of such flow generators that are running in parallel, **at each node**.
+
+
+tune min flow size in the flow_gen script, make sure to run set_up.sh after making any changes so that the script is up to date at each node! (Otherwise you would be running older versions of the code as the local copies at each node will be called!)
+
+performance issues
+
+
 TODO - explain how to interpret the logs and make sure random wait times are good enough
-It should be made sure that, the random wait time is greater than the flow completion time. This can be done thru checking the flow_gen.log produced at the end of an experiment run.
+It should be made sure that, the random wait time is greater than the flow completion time. This can be done thru checking the flow_gen.log produced at the end of an experiment run. This log records (with a rough accuracy) how much each flow took to complete and how much the random wait time was. We would like to make sure that the random wait time is >> flow completion time.
+
+comparability with other algorithms
+
 
 ### Advanced: Debugging tools located under the `misc` folder
 
-`collector.sh` and `q_watcher.sh`
+The `misc` folder contains the following simple scripts that are useful for debugging and sanity checking the experiments.
+
+`collector.sh` - Runs the `tc show` command every 0.2 seconds and saves the output to a file called `qdisc_stats.txt`
+
+`q_watcher.sh` - Collects a parsed version of queue logs for **N** parallel queues, takes **N** and a log file name as inputs.
 
 
 Click [here](https://github.com/ufukusubutun/Reordering_Switch#running-the-experiment) to go back to the main readme page.

@@ -6,7 +6,7 @@ At this stage, it is assumed that, you have a Cloudlab experiment reserved and r
 
 In order to generate realistic TCP traffic representative of a core network, we will take advantage of [a wide area network traffic characterization study by Jurkiewicz et al](https://arxiv.org/abs/1809.03486). We will use their tools and model to generate traces with TCP flow sizes in Bytes. For detailed information about the tools please visit [their repo](https://github.com/piotrjurkiewicz/flow-models).
 
-Here you have two options, you can either generate new fresh TCP flow size traces as you desire using the instructions below, or download a trace I prepared using the same tool/model and uploaded to Google Drive for your convenience.
+Here you have two options, (a) you can either generate new fresh TCP flow size traces as you desire using the instructions below, or (b) download a trace I prepared using the same tool/model and uploaded to Google Drive for your convenience.
 
 Make sure you have an ssh connection with the **emulator** node and follow the instructions below at the emulator node.
 

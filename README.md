@@ -4,13 +4,13 @@ Ufuk Usubütün, Fraida Fund, Shivendra Panwar
 
 NYU Networks Research Group
 
-This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' which appeared at IEEE HPSR 2023. Our work was awarded the BEST PAPER AWARD! To better undertand the motivation and takeaways, please don't forget to check our paper.
+This repository contains all the source code and instructions necessary to run experiments and reproduce results from our paper: 'Do Switches Still Have to Deliver Packets in Sequence?' which appeared at IEEE Conference on High Performance Switching and Routing, 2023 at Albuquerque, NM. Our work was awarded the BEST PAPER AWARD! To better undertand the motivation and takeaways, please don't forget to check our paper.
 
 We aim to evaluate the resilience of contemporary TCP loss detection (formally called 'recovery') algorithms under patterns of reordering that would be caused by a load-balanced switch located at the network core. The internet core typically has high line rates and large number of flows getting mixed. And the load-balanced switch we use to cunduct the evalutaion was inspired by the Load-Balanced Birkhoff-von Neumann Switch [design of C.S. Chang](https://web.stanford.edu/class/ee384y/Handouts/BVN-Switches-Chang.pdf)
 
 The experiments involve, generating thousands of flows at nodes located at the branches of a tree. This traffic is mixed and sent through an emulator node where we implement the effect of the desired switch architecture on software. And the traffic terminates at sinks. While the traffic traverses the switch, we collect packet header captures at the ingress and egress nodes of the 'emulator' node and post-process those to conduct measurements.
 
-To reproduce the results you can follow the steps below. In general terms, the procedure involves doing the following:
+To reproduce the results you can follow the steps below, marked as **TODO**. In general terms, the procedure involves doing the following:
 
 * Instantiate the topology at Cloudlab
 * Generate (or copy pre-prepared) TCP trace files
